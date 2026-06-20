@@ -28,8 +28,8 @@
 <body>
   <div class="switch-bar">
     <div class="switch-title">Air Assault Study Sheets</div>
-    <button class="switch-btn active" id="phase1Btn" type="button" onclick="showPhase('phase1')">Phase 1</button>
-    <button class="switch-btn phase2" id="phase2Btn" type="button" onclick="showPhase('phase2')">Phase 2</button>
+    <button class="switch-btn active" id="phase1Btn" type="button" aria-pressed="true" onclick="showPhase('phase1')">Phase 1</button>
+    <button class="switch-btn phase2" id="phase2Btn" type="button" aria-pressed="false" onclick="showPhase('phase2')">Phase 2</button>
   </div>
   <div class="frame-wrap">
     <iframe id="phase1Frame" class="active" title="Air Assault Phase I Study Sheet" srcdoc="&lt;!DOCTYPE html&gt;
@@ -1071,6 +1071,11 @@
 "></iframe>
   </div>
   <script>
+    function getHeaderOffset() {
+      const switchBar = document.querySelector('.switch-bar');
+      return switchBar ? switchBar.getBoundingClientRect().height + 12 : 0;
+    }
+
     function resizeFrame(frame) {
       try {
         const doc = frame.contentWindow.document;
@@ -1078,28 +1083,75 @@
         frame.style.height = height + 'px';
       } catch (e) { frame.style.height = '100vh'; }
     }
+
+    function scrollParentToFrameTarget(frame, target) {
+      const targetTop = target.getBoundingClientRect().top;
+      const frameTop = frame.getBoundingClientRect().top;
+      const top = window.scrollY + frameTop + targetTop - getHeaderOffset();
+      window.scrollTo({ top: Math.max(0, top), behavior: 'smooth' });
+    }
+
+    function setupFrameNavigation(frame) {
+      try {
+        const doc = frame.contentWindow.document;
+        doc.querySelectorAll('a[href^="#"]').forEach(function (link) {
+          if (link.dataset.parentScrollReady === 'true') return;
+          link.dataset.parentScrollReady = 'true';
+          link.addEventListener('click', function (event) {
+            const id = link.getAttribute('href').slice(1);
+            const target = doc.getElementById(id);
+            if (!target) return;
+
+            event.preventDefault();
+            resizeFrame(frame);
+            scrollParentToFrameTarget(frame, target);
+          });
+        });
+      } catch (e) {
+        // srcdoc frames are same-origin; this fallback keeps the wrapper usable if that ever changes.
+      }
+    }
+
     function resizeVisibleFrame() {
       const activeFrame = document.querySelector('iframe.active');
-      if (activeFrame) resizeFrame(activeFrame);
+      if (activeFrame) {
+        resizeFrame(activeFrame);
+        setupFrameNavigation(activeFrame);
+      }
     }
+
     function showPhase(phase) {
       const phase1Frame = document.getElementById('phase1Frame');
       const phase2Frame = document.getElementById('phase2Frame');
       const phase1Btn = document.getElementById('phase1Btn');
       const phase2Btn = document.getElementById('phase2Btn');
       const isPhase2 = phase === 'phase2';
+      const activeFrame = isPhase2 ? phase2Frame : phase1Frame;
       phase1Frame.classList.toggle('active', !isPhase2);
       phase2Frame.classList.toggle('active', isPhase2);
       phase1Btn.classList.toggle('active', !isPhase2);
       phase2Btn.classList.toggle('active', isPhase2);
+      phase1Btn.setAttribute('aria-pressed', String(!isPhase2));
+      phase2Btn.setAttribute('aria-pressed', String(isPhase2));
       document.title = isPhase2 ? 'Air Assault Phase II Study Sheet' : 'Air Assault Phase I Study Sheet';
-      window.scrollTo({ top: 0, behavior: 'instant' });
+      try {
+        activeFrame.contentWindow.scrollTo(0, 0);
+        activeFrame.contentWindow.location.hash = '';
+      } catch (e) {}
+      window.scrollTo({ top: 0, behavior: 'auto' });
+      setupFrameNavigation(activeFrame);
       setTimeout(resizeVisibleFrame, 50);
       setTimeout(resizeVisibleFrame, 300);
     }
+
     window.addEventListener('load', function () {
       document.querySelectorAll('iframe').forEach(function (frame) {
-        frame.addEventListener('load', function () { resizeFrame(frame); });
+        frame.addEventListener('load', function () {
+          resizeFrame(frame);
+          setupFrameNavigation(frame);
+        });
+        resizeFrame(frame);
+        setupFrameNavigation(frame);
       });
       setTimeout(resizeVisibleFrame, 50);
       setTimeout(resizeVisibleFrame, 300);
