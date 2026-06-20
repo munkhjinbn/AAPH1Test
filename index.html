@@ -1,0 +1,645 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Air Assault Phase I Study Sheet</title>
+  <style>
+    :root {
+      --bg: #f4f6f8;
+      --card: #ffffff;
+      --ink: #1f2937;
+      --muted: #5b6472;
+      --accent: #0f766e;
+      --accent-dark: #115e59;
+      --line: #d9e1e8;
+      --soft: #e6fffa;
+      --warn: #fff7ed;
+      --shadow: 0 10px 24px rgba(15, 23, 42, 0.08);
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    html {
+      scroll-behavior: smooth;
+    }
+
+    body {
+      margin: 0;
+      font-family: Arial, Helvetica, sans-serif;
+      color: var(--ink);
+      background: linear-gradient(180deg, #e8f3f1 0%, var(--bg) 260px);
+      line-height: 1.45;
+    }
+
+    header {
+      background: linear-gradient(135deg, #0f766e 0%, #134e4a 100%);
+      color: white;
+      padding: 42px 22px 34px;
+      border-bottom: 6px solid #0d9488;
+    }
+
+    .wrap {
+      max-width: 1180px;
+      margin: 0 auto;
+      padding: 0 18px;
+    }
+
+    header h1 {
+      margin: 0 0 10px;
+      font-size: clamp(2rem, 4vw, 3.2rem);
+      letter-spacing: -0.04em;
+    }
+
+    header p {
+      max-width: 880px;
+      margin: 0;
+      font-size: 1.05rem;
+      color: #dffaf5;
+    }
+
+    .toolbar {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      margin-top: 22px;
+    }
+
+    .pill {
+      color: white;
+      text-decoration: none;
+      border: 1px solid rgba(255,255,255,.35);
+      border-radius: 999px;
+      padding: 8px 12px;
+      font-size: .9rem;
+      background: rgba(255,255,255,.10);
+    }
+
+    .pill:hover {
+      background: rgba(255,255,255,.2);
+    }
+
+    main {
+      padding: 28px 0 54px;
+    }
+
+    section {
+      background: var(--card);
+      border: 1px solid var(--line);
+      box-shadow: var(--shadow);
+      border-radius: 18px;
+      padding: 24px;
+      margin-bottom: 22px;
+    }
+
+    h2 {
+      margin: 0 0 16px;
+      font-size: 1.55rem;
+      color: var(--accent-dark);
+      letter-spacing: -0.02em;
+      border-bottom: 2px solid var(--soft);
+      padding-bottom: 8px;
+    }
+
+    h3 {
+      margin: 20px 0 10px;
+      font-size: 1.08rem;
+      color: #0f4f4a;
+    }
+
+    .note {
+      background: var(--soft);
+      border-left: 5px solid var(--accent);
+      padding: 12px 14px;
+      border-radius: 10px;
+      margin: 12px 0 18px;
+    }
+
+    .warn {
+      background: var(--warn);
+      border-left-color: #f97316;
+    }
+
+    .grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(245px, 1fr));
+      gap: 14px;
+    }
+
+    .mini-card {
+      border: 1px solid var(--line);
+      border-radius: 14px;
+      padding: 15px;
+      background: #fbfdff;
+    }
+
+    .mini-card strong {
+      color: var(--accent-dark);
+      display: block;
+      margin-bottom: 4px;
+      font-size: 1.02rem;
+    }
+
+    .table-wrap {
+      width: 100%;
+      overflow-x: auto;
+      border: 1px solid var(--line);
+      border-radius: 14px;
+      margin: 12px 0 18px;
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      min-width: 760px;
+      background: white;
+    }
+
+    th {
+      background: #0f766e;
+      color: white;
+      text-align: left;
+      padding: 11px 12px;
+      font-size: .92rem;
+      vertical-align: top;
+    }
+
+    td {
+      padding: 10px 12px;
+      border-top: 1px solid var(--line);
+      vertical-align: top;
+      font-size: .93rem;
+    }
+
+    tr:nth-child(even) td {
+      background: #f8fafc;
+    }
+
+    .compact table {
+      min-width: 520px;
+    }
+
+    ul {
+      margin-top: 8px;
+      padding-left: 22px;
+    }
+
+    li {
+      margin: 4px 0;
+    }
+
+    .two-col {
+      columns: 2;
+      column-gap: 34px;
+    }
+
+    .flash {
+      display: inline-block;
+      font-weight: 700;
+      color: #0f4f4a;
+      background: #ccfbf1;
+      padding: 2px 7px;
+      border-radius: 7px;
+      white-space: nowrap;
+    }
+
+    .footer {
+      color: var(--muted);
+      font-size: .9rem;
+      text-align: center;
+      margin-top: 26px;
+    }
+
+    @media (max-width: 740px) {
+      section { padding: 18px; border-radius: 14px; }
+      .two-col { columns: 1; }
+      table { min-width: 720px; }
+      header { padding-top: 30px; }
+    }
+
+    @media print {
+      body {
+        background: white;
+      }
+      header {
+        background: white;
+        color: black;
+        border-bottom: 2px solid #111;
+        padding: 18px 0;
+      }
+      header p, .pill {
+        color: black;
+      }
+      .toolbar {
+        display: none;
+      }
+      section {
+        box-shadow: none;
+        break-inside: avoid;
+        border: 1px solid #aaa;
+      }
+      th {
+        background: #ddd !important;
+        color: black;
+      }
+      a {
+        color: black;
+        text-decoration: none;
+      }
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <div class="wrap">
+      <h1>Air Assault Phase I Study Sheet</h1>
+      <p>Condensed helicopter specifications, references, MEDEVAC/CASEVAC notes, PZ/LZ operations, and air assault planning terms.</p>
+      <div class="toolbar">
+        <a class="pill" href="#aircraft-specs">Aircraft Specs</a>
+        <a class="pill" href="#references">References</a>
+        <a class="pill" href="#safety">Safety</a>
+        <a class="pill" href="#medevac">MEDEVAC</a>
+        <a class="pill" href="#nine-line">9-Line</a>
+        <a class="pill" href="#pz-lz">PZ/LZ</a>
+      </div>
+    </div>
+  </header>
+
+  <main class="wrap">
+    <section id="aircraft-specs">
+      <h2>Aircraft / Helicopter Specifications</h2>
+      <div class="note">
+        <strong>Memory anchor:</strong> UH-60 = <span class="flash">156 kts</span>, <span class="flash">120–145 cruise</span>, <span class="flash">2.5 hrs</span>, <span class="flash">11 w/seats</span>, <span class="flash">16 w/o</span>, <span class="flash">8k hook / 9k L-M</span>, <span class="flash">22k max / 23.5k L-M</span>.
+      </div>
+      <div class="table-wrap">
+        <table>
+          <thead>
+            <tr>
+              <th>Aircraft</th>
+              <th>Name</th>
+              <th>Speed / Time</th>
+              <th>Crew</th>
+              <th>ACL / Pax / Litters</th>
+              <th>Hook / Weight</th>
+              <th>Missions / Notes</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td><strong>AH-64 D/E</strong></td>
+              <td>Apache</td>
+              <td>Max 140–145 kts; cruise 110/120 kts; flight time 2 hrs or 260 km</td>
+              <td>2: pilot, co-pilot/gunner</td>
+              <td>ACL: none</td>
+              <td>Max gross 23,000 lbs</td>
+              <td>Primary anti-armor. Secondary: CAS, air-to-air combat, reconnaissance.</td>
+            </tr>
+            <tr>
+              <td><strong>UH-60 A/L/M</strong></td>
+              <td>Blackhawk</td>
+              <td>Max 156 kts; cruise 120–145 kts; flight time 2.5 hrs</td>
+              <td>4: pilot, co-pilot, 2 crew chiefs</td>
+              <td>11 pax w/seats; 16 pax w/o seats</td>
+              <td>Hook: 8,000 lbs A; 9,000 lbs L/M. Max gross: 22,000 lbs A; 23,500 lbs L/M. Planning wt: 8,000 lbs A.</td>
+              <td>FRIES, SPIES, CASEVAC, rappelling, airborne ops, sling load, resupply.</td>
+            </tr>
+            <tr>
+              <td><strong>CH-47 D/F</strong></td>
+              <td>Chinook</td>
+              <td>Max 170 kts; cruise 120–145 kts; flight time 2.5 hrs</td>
+              <td>4: pilot, co-pilot, crew chief, flight engineer</td>
+              <td>33 pax; 24 litters; 31 ambulatory</td>
+              <td>Fore hook 17,000 lbs; aft hook 17,000 lbs; center hook 26,000 lbs; dual fore+aft 25,000 lbs; max gross 50,000 lbs</td>
+              <td>Primary troop movement. CASEVAC supersedes all other missions.</td>
+            </tr>
+            <tr>
+              <td><strong>LUH-72A</strong></td>
+              <td>Lakota</td>
+              <td>Max 145 kts; cruise 133 kts; flight time 3.5 hrs</td>
+              <td>3: pilot, co-pilot, crew chief</td>
+              <td>8 pax; litter with med crew: 2 pax</td>
+              <td>Hook 3,306 lbs; max gross 7,903 lbs</td>
+              <td>Homeland security, drug interdiction, general support, logistics, MEDEVAC.</td>
+            </tr>
+            <tr>
+              <td><strong>AH-6J / MH-6J</strong></td>
+              <td>Little Bird</td>
+              <td>Max 153 kts; cruise 135 kts</td>
+              <td>2 pilots</td>
+              <td>Up to 6 personnel on outboard seats</td>
+              <td>—</td>
+              <td>Infiltration, exfiltration, close air support of SOF.</td>
+            </tr>
+            <tr>
+              <td><strong>CH-46E</strong></td>
+              <td>Sea Knight</td>
+              <td>—</td>
+              <td>—</td>
+              <td>24 pax; 15 litters</td>
+              <td>Hook 10,000 lbs</td>
+              <td>Navy/Marines.</td>
+            </tr>
+            <tr>
+              <td><strong>CH-53 D/E</strong></td>
+              <td>Sea Stallion</td>
+              <td>—</td>
+              <td>—</td>
+              <td>37–55 pax w/ centerline seats; 24 litters</td>
+              <td>Min ACL 6,000 lbs; internal cargo 30,000 lbs; hook 36,000 lbs</td>
+              <td>Navy/Marines heavy lift.</td>
+            </tr>
+            <tr>
+              <td><strong>MV-22B</strong></td>
+              <td>Osprey</td>
+              <td>—</td>
+              <td>—</td>
+              <td>24 pax w/seats; 32 pax w/o seats; 12 litters</td>
+              <td>Internal cargo 20,000 lbs / 24 pax; dual hooks 15,000 lbs</td>
+              <td>Navy/Marines tiltrotor.</td>
+            </tr>
+            <tr>
+              <td><strong>MQ-1C</strong></td>
+              <td>Gray Eagle UAS</td>
+              <td>25,000 ft MSL; max 130 kts; cruise 80 kts; 22 hrs w/o armament</td>
+              <td>Unmanned</td>
+              <td>—</td>
+              <td>Can carry 4 Hellfires; reduces flight time by 50%</td>
+              <td>Recon, surveillance, security, attack/close combat, C2 support.</td>
+            </tr>
+            <tr>
+              <td><strong>RQ-7B V1/V2</strong></td>
+              <td>Shadow UAS</td>
+              <td>15,000 ft MSL; max 110 kts; cruise 70–80 kts; 5 hrs V1 / 8 hrs V2</td>
+              <td>Unmanned</td>
+              <td>—</td>
+              <td>No weapon system</td>
+              <td>UAS.</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </section>
+
+    <section id="fuel-recognition">
+      <h2>Fuel Pods & Aircraft Recognition</h2>
+      <div class="grid">
+        <div class="mini-card"><strong>Large fuel pod</strong>450 gal; adds 3 hrs.</div>
+        <div class="mini-card"><strong>Small fuel pod</strong>230 gal; adds 60–90 min.</div>
+        <div class="mini-card"><strong>UH-60 fuel pods</strong>2 large + 2 small pods = 11.5 hrs flight time.</div>
+      </div>
+      <div class="table-wrap compact">
+        <table>
+          <thead>
+            <tr><th>Aircraft</th><th>Recognition Features</th></tr>
+          </thead>
+          <tbody>
+            <tr><td><strong>AH-64 D/E</strong></td><td>4-blade main rotor, 4-blade tail rotor, 2 turbine engines, swept-back vertical stabilizer, fire-control radar possible, winglets for armament.</td></tr>
+            <tr><td><strong>UH-60 A/L/M</strong></td><td>4-blade main rotor, 4-blade tail rotor, swept-back vertical stabilizer, large tapered horizontal stabilizer, 2 turbine engines, oval fuselage, wheels.</td></tr>
+            <tr><td><strong>CH-47 D/F</strong></td><td>Bus-shaped fuselage, wheels, 2 × 3-blade main rotor systems. CH-47F upgrades: avionics, engines, digital cockpit.</td></tr>
+            <tr><td><strong>LUH-72A</strong></td><td>4 main rotor blades, 2 tail rotor blades, 2 turbine engines, 3 vertical stabilizers, skids, fly-by-wire.</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </section>
+
+    <section id="references">
+      <h2>References</h2>
+      <div class="table-wrap compact">
+        <table>
+          <thead>
+            <tr><th>Topic</th><th>Reference</th></tr>
+          </thead>
+          <tbody>
+            <tr><td>Army Aviation</td><td><strong>FM 3-04</strong></td></tr>
+            <tr><td>Aircraft Safety</td><td><strong>FM 3-99</strong></td></tr>
+            <tr><td>Aeromedical Evacuation</td><td><strong>ATP 4-02.2</strong></td></tr>
+            <tr><td>Combat Assault</td><td><strong>FM 3-99</strong></td></tr>
+            <tr><td>LZ/PZ Operations</td><td><strong>FM 3-21.38</strong></td></tr>
+          </tbody>
+        </table>
+      </div>
+    </section>
+
+    <section id="prefixes">
+      <h2>Aircraft Prefixes</h2>
+      <div class="grid">
+        <div class="mini-card"><strong>AH</strong>Attack Helicopter</div>
+        <div class="mini-card"><strong>UH</strong>Utility Helicopter</div>
+        <div class="mini-card"><strong>CH</strong>Cargo Helicopter</div>
+        <div class="mini-card"><strong>LUH</strong>Light Utility Helicopter</div>
+        <div class="mini-card"><strong>OH</strong>Observation Helicopter</div>
+        <div class="mini-card"><strong>HH</strong>Hospital Helicopter</div>
+        <div class="mini-card"><strong>MH</strong>Multi-Mission Helicopter</div>
+        <div class="mini-card"><strong>MV</strong>Multi-Mission Vertical Take-off/Landing</div>
+        <div class="mini-card"><strong>UAS/UAV</strong>Unmanned Aircraft System / Vehicle</div>
+      </div>
+    </section>
+
+    <section id="safety">
+      <h2>Safety, Approach, Departure, and Emergencies</h2>
+      <h3>Safety Basics</h3>
+      <ul class="two-col">
+        <li>Always have ID card, ID tags, and earplugs.</li>
+        <li>Helmet on; chinstrap fastened with no twists.</li>
+        <li>Weapons: muzzle down, no round chambered, selector on safe.</li>
+        <li>Sleeves down to protect from debris and flash fires.</li>
+        <li>Secure loose gear IAW SOP.</li>
+        <li>Stay away from main rotor, tail rotor, cargo hook, and static electricity.</li>
+        <li>Seatbelt always fastened.</li>
+      </ul>
+
+      <div class="table-wrap compact">
+        <table>
+          <thead>
+            <tr><th>Aircraft</th><th>Approach / Departure</th><th>Crash Position</th></tr>
+          </thead>
+          <tbody>
+            <tr><td>General</td><td>Approach/depart from downslope side.</td><td>—</td></tr>
+            <tr><td>LUH-72A</td><td>45° from front when running; 90° from side when stopped.</td><td>Sit upright, muzzle down.</td></tr>
+            <tr><td>UH-60</td><td>90° from side.</td><td>Sit upright, muzzle down.</td></tr>
+            <tr><td>CH-47</td><td>45° from rear.</td><td>Bent forward at waist, muzzle down.</td></tr>
+          </tbody>
+        </table>
+      </div>
+
+      <div class="note warn">
+        <strong>Crash procedures:</strong> Follow crew commands, wait for rotors to stop, exit 3, 9, or 12 o’clock; for CH-47 also 6 o’clock; move 100 meters away. Fire extinguishers are for people.
+      </div>
+
+      <div class="table-wrap compact">
+        <table>
+          <thead>
+            <tr><th>Aircraft</th><th>Exits</th><th>First Aid Kits</th><th>Fire Extinguishers</th></tr>
+          </thead>
+          <tbody>
+            <tr><td>LUH-72A</td><td>4</td><td>1</td><td>1</td></tr>
+            <tr><td>UH-60</td><td>4</td><td>3</td><td>2</td></tr>
+            <tr><td>CH-47</td><td>10</td><td>7</td><td>3</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </section>
+
+    <section id="medevac">
+      <h2>MEDEVAC / CASEVAC</h2>
+      <div class="grid">
+        <div class="mini-card"><strong>MEDEVAC</strong>Casualty movement with medical professionals providing en route care.</div>
+        <div class="mini-card"><strong>CASEVAC</strong>Casualty movement without en route care.</div>
+        <div class="mini-card"><strong>MASCAS / MASCAL</strong>Casualties exceed unit support capability.</div>
+        <div class="mini-card"><strong>MTF</strong>Medical Treatment Facility.</div>
+        <div class="mini-card"><strong>Litter</strong>Unable to walk.</div>
+        <div class="mini-card"><strong>Ambulatory</strong>Able to walk.</div>
+      </div>
+
+      <div class="table-wrap">
+        <table>
+          <thead>
+            <tr><th>Aircraft</th><th>Markings</th><th>Crew</th><th>ACL</th></tr>
+          </thead>
+          <tbody>
+            <tr><td><strong>LUH-72A MEDEVAC</strong></td><td>4 markings</td><td>4: pilot, co-pilot, crew chief, in-flight medic</td><td>2 litters w/1 medic OR 5 ambulatory</td></tr>
+            <tr><td><strong>HH-60M</strong></td><td>5 markings</td><td>4</td><td>Normal: 4 litters + 1 ambulatory. Prior notification: 6 litters OR 6 ambulatory.</td></tr>
+            <tr><td><strong>UH-60Q</strong></td><td>5 markings</td><td>4</td><td>Normal: 4 litters + 1 ambulatory. Without hoist: 6 litters + 1 ambulatory OR 7 ambulatory. With hoist: 3 litters + 1 ambulatory OR 4 ambulatory.</td></tr>
+            <tr><td><strong>CH-47 MEDEVAC</strong></td><td>None</td><td>4: pilot, co-pilot, crew chief, flight engineer</td><td>24 litters + 1 ambulatory OR 31 ambulatory</td></tr>
+          </tbody>
+        </table>
+      </div>
+
+      <h3>MEDEVAC Loading / Memory Notes</h3>
+      <ul>
+        <li>First MEDEVAC helicopter: OH-13 Sioux.</li>
+        <li>OH-13 disadvantages: no in-flight care, exposed to weather/temperature, exposed to enemy fire.</li>
+        <li>Loading sequence: ambulatory loaded first or last; litters loaded in Z pattern; most seriously injured loaded last.</li>
+        <li>CH-47 medic ratio: 1 medic per 6 patients.</li>
+        <li>CH-47 litter/ambulatory combos: 0/31, 4/25, 8/19, 12/16 normal, 16/10, 20/4, 24/1.</li>
+      </ul>
+    </section>
+
+    <section id="hoist">
+      <h2>Hoist / Extraction Equipment</h2>
+      <div class="table-wrap compact">
+        <table>
+          <thead>
+            <tr><th>Equipment</th><th>Key Data</th></tr>
+          </thead>
+          <tbody>
+            <tr><td>High Performance Utility Hoist</td><td>TS 600 lbs; cable TS 600 lbs; cable 256 ft, 250 ft usable; slow: 600 lbs at 125 ft/min; fast: 300 lbs at 250 ft/min.</td></tr>
+            <tr><td>Jungle Forest Penetrator</td><td>Thick vegetation; TS 600 lbs; ACL 3 ambulatory.</td></tr>
+            <tr><td>Kendrick’s Extraction Device</td><td>Suspected spinal injury; TS 400 lbs; ACL 1 litter.</td></tr>
+            <tr><td>Basic Rigged Litter</td><td>Ground evacuation; TS 400 lbs; ACL 1 litter.</td></tr>
+            <tr><td>SKED Rescue System</td><td>Ground/water evacuation; TS 400 lbs; ACL 1 litter.</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </section>
+
+    <section id="nine-line">
+      <h2>9-Line MEDEVAC</h2>
+      <div class="table-wrap">
+        <table>
+          <thead>
+            <tr><th>Line</th><th>What It Is</th><th>Key Codes / Notes</th></tr>
+          </thead>
+          <tbody>
+            <tr><td>1</td><td>Location</td><td>6-digit grid.</td></tr>
+            <tr><td>2</td><td>Radio frequency / call sign / suffix</td><td>Contact info.</td></tr>
+            <tr><td>3</td><td>Patients by precedence</td><td>1 Urgent, 1A Urgent Surgical, 2 Priority, 3 Routine, 4 Convenience.</td></tr>
+            <tr><td>4</td><td>Special equipment</td><td>A None, B Hoist, C Extraction equipment, D Ventilator.</td></tr>
+            <tr><td>5</td><td>Patients by type</td><td>L + number, A + number.</td></tr>
+            <tr><td>6</td><td>Security / wounds</td><td>Wartime: N, P, E, X. Peacetime: number/type of wounds, injuries, illness.</td></tr>
+            <tr><td>7</td><td>Marking pickup site</td><td>A panels, B pyrotechnic, C smoke, D none, E other.</td></tr>
+            <tr><td>8</td><td>Nationality</td><td>A US mil, B US civilian, C non-US mil, D non-US civilian, E EPW.</td></tr>
+            <tr><td>9</td><td>CBRN / terrain</td><td>Wartime: C, B, R, N. Peacetime: terrain description.</td></tr>
+          </tbody>
+        </table>
+      </div>
+      <div class="note">
+        <strong>Remember:</strong> Lines 1–5 get aircraft in the air. Lines 6–9 can be sent while aircraft is flying.
+      </div>
+    </section>
+
+    <section id="air-assault">
+      <h2>Air Assault Operations</h2>
+      <div class="grid">
+        <div class="mini-card"><strong>Air assault operations</strong>Movement of friendly assault forces by rotary-wing aircraft to engage enemy forces.</div>
+        <div class="mini-card"><strong>Air movement operations</strong>Air transport of units, personnel, equipment, and supplies.</div>
+        <div class="mini-card"><strong>Air assault</strong>Vertical envelopment to surprise enemy and achieve an unopposed landing.</div>
+        <div class="mini-card"><strong>AATF</strong>Temporary integrated force tailored to the mission.</div>
+      </div>
+
+      <h3>Levels</h3>
+      <ul>
+        <li><strong>Division:</strong> lowest level with resources/assets for AASLT.</li>
+        <li><strong>Battalion:</strong> lowest level that can plan and coordinate AASLT.</li>
+        <li><strong>Company:</strong> lowest level that can execute AASLT.</li>
+      </ul>
+
+      <h3>Reverse Planning: GLALS</h3>
+      <ol>
+        <li>Ground Tactical Plan</li>
+        <li>Landing Plan</li>
+        <li>Air Movement Plan</li>
+        <li>Loading Plan</li>
+        <li>Staging Plan</li>
+      </ol>
+
+      <h3>Air Movement Terms</h3>
+      <div class="grid">
+        <div class="mini-card"><strong>Chalk</strong>Same as load; personnel/equipment moved by one aircraft.</div>
+        <div class="mini-card"><strong>Serial</strong>Two or more aircraft under a serial commander, grouped by time/space.</div>
+        <div class="mini-card"><strong>Lift</strong>All aircraft assigned to the mission.</div>
+        <div class="mini-card"><strong>H-Hour</strong>First aircraft of first lift lands at LZ.</div>
+        <div class="mini-card"><strong>Flight time</strong>PZ to SP and RP to LZ = 2 minutes.</div>
+        <div class="mini-card"><strong>Loading time</strong>3 min day; 5 min night.</div>
+      </div>
+    </section>
+
+    <section id="pz-lz">
+      <h2>PZ / LZ Operations</h2>
+      <div class="note">
+        <strong>Technical factors: FLOARSS</strong> — Formation/number of aircraft, Loads, Obstacles, Atmospheric conditions, Routes, Surface conditions, Size/type of aircraft.
+      </div>
+
+      <h3>HLP / TDP Sizes</h3>
+      <div class="table-wrap compact">
+        <table>
+          <thead>
+            <tr><th>Size</th><th>Diameter</th><th>Use</th></tr>
+          </thead>
+          <tbody>
+            <tr><td>Size 1</td><td>25 m</td><td>Small observation.</td></tr>
+            <tr><td>Size 2</td><td>35 m</td><td>Small utility/attack.</td></tr>
+            <tr><td>Size 3</td><td>50 m</td><td>Large utility/attack.</td></tr>
+            <tr><td>Size 4</td><td>80 m</td><td>Cargo.</td></tr>
+            <tr><td>Size 5</td><td>100 m</td><td>Sling loads / unknown aircraft.</td></tr>
+            <tr><td>Size 6</td><td>125 m</td><td>Sling loads using long lines.</td></tr>
+            <tr><td>Size 7</td><td>150 m</td><td>Night sling loads.</td></tr>
+          </tbody>
+        </table>
+      </div>
+
+      <h3>Marking / Controlling</h3>
+      <ul>
+        <li>Phases: selecting, marking, controlling.</li>
+        <li>Obstacles: anything 18 in high/wide/deep. Use 4 R’s: remove, reduce, mark red, radio.</li>
+        <li>Ground slope: 0–7° all aircraft; 8–15° cargo and medium utility can land with advisory.</li>
+        <li>Slope formula: vertical distance × 57.3 / horizontal distance.</li>
+        <li>Approach/departure: obstacle buffer 10:1 reducible to 5:1; no crosswind over 9 kts; no tailwind over 5 kts.</li>
+        <li>HAT = humidity, altitude, temperature.</li>
+        <li>Nine NATO formations: trail, staggered trail right, staggered trail left, echelon right, echelon left, heavy right, heavy left, vee, diamond. Diamond = most secure.</li>
+      </ul>
+
+      <h3>Night Markings</h3>
+      <div class="grid">
+        <div class="mini-card"><strong>Inverted Y</strong>Directional light at top, base light 7 m down, landing zone 14 m from there, stem lights 7 m out to sides; marks first TDP at night.</div>
+        <div class="mini-card"><strong>NATO T</strong>Base light top, flankers 10 m from base, directional light 10 m down, stem light 10 m down from directional.</div>
+        <div class="mini-card"><strong>Control Methods</strong>Visual, electronic, verbal.</div>
+      </div>
+    </section>
+
+    <p class="footer">Generated study sheet from uploaded Air Assault Phase I notes. Use as a quick-review aid and verify against your current course standard.</p>
+  </main>
+</body>
+</html>
