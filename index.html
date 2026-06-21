@@ -12,14 +12,32 @@
     .switch-btn { border: 0; border-radius: 999px; padding: 13px 26px; font-size: 1.05rem; font-weight: 900; cursor: pointer; color: #111827; background: #e5e7eb; transition: transform .12s ease, background .12s ease, color .12s ease; }
     .switch-btn:hover { transform: translateY(-1px); }
     .switch-btn.active { background: #0d9488; color: white; box-shadow: 0 0 0 3px rgba(13,148,136,.25); }
-    .switch-btn.phase2 { font-size: 1.25rem; padding: 15px 34px; }
+    .switch-btn.phase2 { font-size: 1.05rem; padding: 13px 26px; }
     .frame-wrap { width: 100%; min-height: 100vh; background: white; }
     iframe { display: none; width: 100%; height: auto; min-height: 100vh; border: 0; background: white; overflow: hidden; }
     iframe.active { display: block; }
+    .quiz-panel { display: none; min-height: 100vh; background: linear-gradient(180deg, #e8f3f1 0%, #f4f6f8 260px); color: #1f2937; padding: 34px 18px 60px; }
+    .quiz-panel.active { display: block; }
+    .quiz-wrap { width: min(960px, 100%); margin: 0 auto; }
+    .quiz-header { background: linear-gradient(135deg, #0f766e 0%, #134e4a 100%); color: white; border-bottom: 6px solid #0d9488; padding: 28px 24px; margin: -34px -18px 28px; }
+    .quiz-header-inner { width: min(960px, 100%); margin: 0 auto; }
+    .quiz-header h1 { margin: 0 0 8px; font-size: clamp(2rem, 4vw, 3rem); letter-spacing: -.03em; }
+    .quiz-header p { margin: 0; color: #dffaf5; line-height: 1.45; }
+    .quiz-actions { display: flex; flex-wrap: wrap; gap: 10px; margin: 0 0 18px; }
+    .quiz-action { border: 0; border-radius: 999px; padding: 11px 16px; font-weight: 800; cursor: pointer; background: #0f766e; color: white; }
+    .quiz-action.secondary { background: #e5e7eb; color: #111827; }
+    .quiz-card { background: white; border: 1px solid #d9e1e8; border-radius: 14px; box-shadow: 0 10px 24px rgba(15, 23, 42, .08); padding: 18px; margin-bottom: 14px; }
+    .quiz-card label { display: block; font-weight: 800; color: #115e59; margin-bottom: 8px; }
+    .quiz-card input { width: 100%; border: 1px solid #cbd5e1; border-radius: 10px; padding: 12px 13px; font-size: 1rem; }
+    .quiz-feedback { margin-top: 10px; padding: 10px 12px; border-radius: 10px; font-weight: 700; display: none; }
+    .quiz-feedback.correct { display: block; color: #065f46; background: #d1fae5; }
+    .quiz-feedback.wrong { display: block; color: #9a3412; background: #ffedd5; }
+    .quiz-score { display: none; margin: 18px 0; padding: 14px 16px; border-left: 5px solid #0f766e; background: #e6fffa; border-radius: 10px; font-weight: 900; }
+    .quiz-score.active { display: block; }
     @media (max-width: 620px) {
       .switch-title { width: 100%; text-align: center; margin-right: 0; }
       .switch-btn { width: calc(50% - 8px); padding-left: 10px; padding-right: 10px; }
-      .switch-btn.phase2 { font-size: 1.1rem; }
+      .switch-btn.phase2 { font-size: 1.05rem; }
       iframe { min-height: 100vh; }
     }
     @media print { .switch-bar { display: none; } iframe { height: auto; } }
@@ -30,6 +48,7 @@
     <div class="switch-title">Air Assault Study Sheets</div>
     <button class="switch-btn active" id="phase1Btn" type="button" aria-pressed="true" onclick="showPhase('phase1')">Phase 1</button>
     <button class="switch-btn phase2" id="phase2Btn" type="button" aria-pressed="false" onclick="showPhase('phase2')">Phase 2</button>
+    <button class="switch-btn" id="quizBtn" type="button" aria-pressed="false" onclick="showQuiz()">Phase 2 Quiz</button>
   </div>
   <div class="frame-wrap">
     <iframe id="phase1Frame" class="active" title="Air Assault Phase I Study Sheet" srcdoc="&lt;!DOCTYPE html&gt;
@@ -851,10 +870,10 @@
         &lt;strong&gt;Phase II = sling-load operations.&lt;/strong&gt; Focus on who does what, which TM covers what, aircraft hook limits, rigging equipment capacities, common load data, link counts, and inspection criteria.
       &lt;/div&gt;
       &lt;div class=&quot;grid&quot;&gt;
-        &lt;div class=&quot;mini-card&quot;&gt;&lt;strong&gt;Minimum Sling Load&lt;/strong&gt;&lt;span class=&quot;flash&quot;&gt;500 lbs&lt;/span&gt;&lt;/div&gt;
+        &lt;div class=&quot;mini-card&quot;&gt;&lt;strong&gt;A-22 Minimum Weight&lt;/strong&gt;&lt;span class=&quot;flash&quot;&gt;500 lbs&lt;/span&gt;&lt;/div&gt;
         &lt;div class=&quot;mini-card&quot;&gt;&lt;strong&gt;Qualified Inspector&lt;/strong&gt;&lt;span class=&quot;flash&quot;&gt;E-4 / SPC or above&lt;/span&gt;&lt;/div&gt;
         &lt;div class=&quot;mini-card&quot;&gt;&lt;strong&gt;Three Units&lt;/strong&gt;Supported unit, aviation unit, receiving unit.&lt;/div&gt;
-        &lt;div class=&quot;mini-card&quot;&gt;&lt;strong&gt;Stability Factors&lt;/strong&gt;&lt;span class=&quot;flash&quot;&gt;HAT&lt;/span&gt; = Humidity, Altitude, Temperature.&lt;/div&gt;
+        &lt;div class=&quot;mini-card&quot;&gt;&lt;strong&gt;Lift Capacity Factors&lt;/strong&gt;Wind, Humidity, Altitude, Temperature, Fuel.&lt;/div&gt;
         &lt;div class=&quot;mini-card&quot;&gt;&lt;strong&gt;DA Form 7382&lt;/strong&gt;Three copies: aviation unit, supported unit, one on the load.&lt;/div&gt;
         &lt;div class=&quot;mini-card&quot;&gt;&lt;strong&gt;Inspect Equipment&lt;/strong&gt;Before and after each use, and/or every &lt;span class=&quot;flash&quot;&gt;6 months&lt;/span&gt;.&lt;/div&gt;
       &lt;/div&gt;
@@ -878,13 +897,16 @@
       &lt;/div&gt;
       &lt;h3&gt;Unit Responsibilities&lt;/h3&gt;
       &lt;div class=&quot;grid&quot;&gt;
-        &lt;div class=&quot;mini-card&quot;&gt;&lt;strong&gt;Supported Unit&lt;/strong&gt;Selects, prepares, and controls the PZ.&lt;/div&gt;
-        &lt;div class=&quot;mini-card&quot;&gt;&lt;strong&gt;Aviation Unit&lt;/strong&gt;Assists with recovery and return of sling-load equipment.&lt;/div&gt;
-        &lt;div class=&quot;mini-card&quot;&gt;&lt;strong&gt;Receiving Unit&lt;/strong&gt;Receives the load at the destination.&lt;/div&gt;
+        &lt;div class=&quot;mini-card&quot;&gt;&lt;strong&gt;Supported Unit&lt;/strong&gt;Selects, prepares, and controls the PZ; stores, inspects, and maintains sling-load equipment; secures sensitive items.&lt;/div&gt;
+        &lt;div class=&quot;mini-card&quot;&gt;&lt;strong&gt;Aviation Unit&lt;/strong&gt;Coordinates with supported/receiving units, assists with recovery and return of equipment, and establishes safety procedures.&lt;/div&gt;
+        &lt;div class=&quot;mini-card&quot;&gt;&lt;strong&gt;Receiving Unit&lt;/strong&gt;Selects, prepares, and controls the LZ; provides trained ground crews; derigs loads; inspects back loads.&lt;/div&gt;
       &lt;/div&gt;
       &lt;h3&gt;Load Classification&lt;/h3&gt;
       &lt;ul&gt;
-        &lt;li&gt;&lt;strong&gt;Suitable load:&lt;/strong&gt; flown for years without incident.&lt;/li&gt;
+        &lt;li&gt;&lt;strong&gt;Certified load:&lt;/strong&gt; equipment and rigging procedures have completed sling-load certification testing.&lt;/li&gt;
+        &lt;li&gt;&lt;strong&gt;Unique load:&lt;/strong&gt; one-time or low-frequency load, approved by high-risk approving authority, O-6 or above.&lt;/li&gt;
+        &lt;li&gt;&lt;strong&gt;Prohibited load:&lt;/strong&gt; unstable flight characteristics; &lt;strong&gt;do not fly&lt;/strong&gt;.&lt;/li&gt;
+        &lt;li&gt;&lt;strong&gt;Suitable load:&lt;/strong&gt; not certified, but demonstrated acceptable static lift and flight characteristics during a flight test.&lt;/li&gt;
         &lt;li&gt;&lt;strong&gt;Inspector rule:&lt;/strong&gt; qualified inspector must be E-4/SPC or above and Pathfinder, Air Assault, or SLICC graduate.&lt;/li&gt;
       &lt;/ul&gt;
     &lt;/section&gt;
@@ -915,13 +937,14 @@
         &lt;table&gt;
           &lt;thead&gt;&lt;tr&gt;&lt;th&gt;Item&lt;/th&gt;&lt;th&gt;Capacity / Study Data&lt;/th&gt;&lt;/tr&gt;&lt;/thead&gt;
           &lt;tbody&gt;
-            &lt;tr&gt;&lt;td&gt;&lt;strong&gt;Complete 10K sling set&lt;/strong&gt;&lt;/td&gt;&lt;td&gt;Rated &lt;strong&gt;10,000 lbs&lt;/strong&gt;; weighs &lt;strong&gt;52 lbs&lt;/strong&gt;; chain has &lt;strong&gt;110–115 links&lt;/strong&gt;.&lt;/td&gt;&lt;/tr&gt;
-            &lt;tr&gt;&lt;td&gt;&lt;strong&gt;Complete 25K sling set&lt;/strong&gt;&lt;/td&gt;&lt;td&gt;Rated &lt;strong&gt;25,000 lbs&lt;/strong&gt;; weighs &lt;strong&gt;114 lbs&lt;/strong&gt;; chain has &lt;strong&gt;84–88 links&lt;/strong&gt;.&lt;/td&gt;&lt;/tr&gt;
+            &lt;tr&gt;&lt;td&gt;&lt;strong&gt;Complete 10K sling set&lt;/strong&gt;&lt;/td&gt;&lt;td&gt;Rated &lt;strong&gt;10,000 lbs&lt;/strong&gt;; weighs &lt;strong&gt;52 lbs&lt;/strong&gt;; 7/8 in OD double-braided nylon rope, 12 ft long; forged steel 8 ft chain with &lt;strong&gt;110–115 links&lt;/strong&gt;; dull gray aluminum apex; 1 1/8 in pin.&lt;/td&gt;&lt;/tr&gt;
+            &lt;tr&gt;&lt;td&gt;&lt;strong&gt;Complete 25K sling set&lt;/strong&gt;&lt;/td&gt;&lt;td&gt;Rated &lt;strong&gt;25,000 lbs&lt;/strong&gt;; weighs &lt;strong&gt;114 lbs&lt;/strong&gt;; 1 1/4 in black double-braided nylon rope, 12 ft long; forged steel 8 ft chain with &lt;strong&gt;84–88 links&lt;/strong&gt;; gold steel apex; 1 1/2 in pin.&lt;/td&gt;&lt;/tr&gt;
             &lt;tr&gt;&lt;td&gt;&lt;strong&gt;Single 25K sling leg&lt;/strong&gt;&lt;/td&gt;&lt;td&gt;Rated &lt;strong&gt;6,250 lbs&lt;/strong&gt;.&lt;/td&gt;&lt;/tr&gt;
             &lt;tr&gt;&lt;td&gt;&lt;strong&gt;10K apex&lt;/strong&gt;&lt;/td&gt;&lt;td&gt;Rated &lt;strong&gt;10,000 lbs&lt;/strong&gt;; pin diameter &lt;strong&gt;1 1/8 in&lt;/strong&gt;.&lt;/td&gt;&lt;/tr&gt;
             &lt;tr&gt;&lt;td&gt;&lt;strong&gt;25K apex&lt;/strong&gt;&lt;/td&gt;&lt;td&gt;Rated &lt;strong&gt;25,000 lbs&lt;/strong&gt;; pin diameter &lt;strong&gt;1 1/2 in&lt;/strong&gt;.&lt;/td&gt;&lt;/tr&gt;
             &lt;tr&gt;&lt;td&gt;&lt;strong&gt;Apex tether cord / lanyard&lt;/strong&gt;&lt;/td&gt;&lt;td&gt;Identifies the &lt;strong&gt;#1 hook&lt;/strong&gt;.&lt;/td&gt;&lt;/tr&gt;
-            &lt;tr&gt;&lt;td&gt;&lt;strong&gt;25K sling set on UH-60&lt;/strong&gt;&lt;/td&gt;&lt;td&gt;Remove the &lt;strong&gt;aluminum spacer&lt;/strong&gt;.&lt;/td&gt;&lt;/tr&gt;
+            &lt;tr&gt;&lt;td&gt;&lt;strong&gt;UH-60 spacer&lt;/strong&gt;&lt;/td&gt;&lt;td&gt;10K set: always use spacer. 25K set: never use spacer.&lt;/td&gt;&lt;/tr&gt;
+            &lt;tr&gt;&lt;td&gt;&lt;strong&gt;CH-47 spacer&lt;/strong&gt;&lt;/td&gt;&lt;td&gt;10K or 25K set: spacer allowed but not required.&lt;/td&gt;&lt;/tr&gt;
           &lt;/tbody&gt;
         &lt;/table&gt;
       &lt;/div&gt;
@@ -930,16 +953,21 @@
         &lt;table&gt;
           &lt;thead&gt;&lt;tr&gt;&lt;th&gt;Item&lt;/th&gt;&lt;th&gt;Capacity / Note&lt;/th&gt;&lt;/tr&gt;&lt;/thead&gt;
           &lt;tbody&gt;
-            &lt;tr&gt;&lt;td&gt;Small screw pin clevis&lt;/td&gt;&lt;td&gt;&lt;strong&gt;8,650 lbs&lt;/strong&gt;&lt;/td&gt;&lt;/tr&gt;
-            &lt;tr&gt;&lt;td&gt;Medium clevis&lt;/td&gt;&lt;td&gt;&lt;strong&gt;6,250 lbs&lt;/strong&gt;&lt;/td&gt;&lt;/tr&gt;
+            &lt;tr&gt;&lt;td&gt;Small clevis&lt;/td&gt;&lt;td&gt;&lt;strong&gt;6,250 lbs&lt;/strong&gt;; used as a lift point.&lt;/td&gt;&lt;/tr&gt;
+            &lt;tr&gt;&lt;td&gt;Medium clevis&lt;/td&gt;&lt;td&gt;&lt;strong&gt;6,250 lbs&lt;/strong&gt;; used on the A-22 cargo bag.&lt;/td&gt;&lt;/tr&gt;
+            &lt;tr&gt;&lt;td&gt;5/8 in screw pin clevis&lt;/td&gt;&lt;td&gt;&lt;strong&gt;4,420 lbs&lt;/strong&gt;; used as a lift point on fuel blivets.&lt;/td&gt;&lt;/tr&gt;
+            &lt;tr&gt;&lt;td&gt;Small screw pin clevis&lt;/td&gt;&lt;td&gt;&lt;strong&gt;8,650 lbs&lt;/strong&gt;; tie-down or lift point.&lt;/td&gt;&lt;/tr&gt;
             &lt;tr&gt;&lt;td&gt;Large clevis&lt;/td&gt;&lt;td&gt;&lt;strong&gt;12,500 lbs&lt;/strong&gt;; can be field-expedient apex.&lt;/td&gt;&lt;/tr&gt;
-            &lt;tr&gt;&lt;td&gt;Platform clevis&lt;/td&gt;&lt;td&gt;&lt;strong&gt;7,000 lbs&lt;/strong&gt;&lt;/td&gt;&lt;/tr&gt;
-            &lt;tr&gt;&lt;td&gt;Type IV connector link&lt;/td&gt;&lt;td&gt;&lt;strong&gt;12,500 lbs&lt;/strong&gt;; base plate, 2 aluminum rollers, locking plate.&lt;/td&gt;&lt;/tr&gt;
-            &lt;tr&gt;&lt;td&gt;Net apex fitting&lt;/td&gt;&lt;td&gt;&lt;strong&gt;10,000 lbs&lt;/strong&gt;&lt;/td&gt;&lt;/tr&gt;
-            &lt;tr&gt;&lt;td&gt;Black load binder&lt;/td&gt;&lt;td&gt;&lt;strong&gt;10,000 lbs&lt;/strong&gt;&lt;/td&gt;&lt;/tr&gt;
-            &lt;tr&gt;&lt;td&gt;Silver load binder&lt;/td&gt;&lt;td&gt;&lt;strong&gt;5,000 lbs&lt;/strong&gt;&lt;/td&gt;&lt;/tr&gt;
-            &lt;tr&gt;&lt;td&gt;CGU-1B&lt;/td&gt;&lt;td&gt;&lt;strong&gt;5,000 lbs&lt;/strong&gt;&lt;/td&gt;&lt;/tr&gt;
-            &lt;tr&gt;&lt;td&gt;Aerial delivery sling&lt;/td&gt;&lt;td&gt;&lt;strong&gt;10,000 lbs&lt;/strong&gt;&lt;/td&gt;&lt;/tr&gt;
+            &lt;tr&gt;&lt;td&gt;Platform clevis&lt;/td&gt;&lt;td&gt;&lt;strong&gt;7,000 lbs&lt;/strong&gt;; Air Force pallets.&lt;/td&gt;&lt;/tr&gt;
+            &lt;tr&gt;&lt;td&gt;Type IV connector link&lt;/td&gt;&lt;td&gt;&lt;strong&gt;12,500 lbs&lt;/strong&gt;; base plate, 2 aluminum rollers, 1 locking plate; constructs the 3 ft apex ring or connects ADS slings.&lt;/td&gt;&lt;/tr&gt;
+            &lt;tr&gt;&lt;td&gt;Net apex fitting&lt;/td&gt;&lt;td&gt;&lt;strong&gt;10,000 lbs&lt;/strong&gt;; 5K and 10K cargo nets.&lt;/td&gt;&lt;/tr&gt;
+            &lt;tr&gt;&lt;td&gt;Black load binder&lt;/td&gt;&lt;td&gt;&lt;strong&gt;10,000 lbs&lt;/strong&gt;; used with 15 ft tie-down straps.&lt;/td&gt;&lt;/tr&gt;
+            &lt;tr&gt;&lt;td&gt;Silver load binder&lt;/td&gt;&lt;td&gt;&lt;strong&gt;5,000 lbs&lt;/strong&gt;; used with 15 ft tie-down straps.&lt;/td&gt;&lt;/tr&gt;
+            &lt;tr&gt;&lt;td&gt;CGU-1B&lt;/td&gt;&lt;td&gt;&lt;strong&gt;5,000 lbs&lt;/strong&gt;; secures cargo in vehicles/trailers or secures two items together.&lt;/td&gt;&lt;/tr&gt;
+            &lt;tr&gt;&lt;td&gt;15 ft tie-down strap&lt;/td&gt;&lt;td&gt;&lt;strong&gt;5,000 / 10,000 lbs&lt;/strong&gt;; secures cargo in vehicles/trailers or secures two items together.&lt;/td&gt;&lt;/tr&gt;
+            &lt;tr&gt;&lt;td&gt;A7A strap&lt;/td&gt;&lt;td&gt;&lt;strong&gt;500 lbs&lt;/strong&gt;; secures cargo in vehicles/trailers or secures two items together.&lt;/td&gt;&lt;/tr&gt;
+            &lt;tr&gt;&lt;td&gt;24 in suspension web strap&lt;/td&gt;&lt;td&gt;&lt;strong&gt;550 lbs&lt;/strong&gt; each.&lt;/td&gt;&lt;/tr&gt;
+            &lt;tr&gt;&lt;td&gt;Aerial delivery sling&lt;/td&gt;&lt;td&gt;&lt;strong&gt;10,000 lbs&lt;/strong&gt;; constructs the 3 ft apex ring.&lt;/td&gt;&lt;/tr&gt;
             &lt;tr&gt;&lt;td&gt;11K CHRP&lt;/td&gt;&lt;td&gt;&lt;strong&gt;11,000 lbs&lt;/strong&gt;&lt;/td&gt;&lt;/tr&gt;
             &lt;tr&gt;&lt;td&gt;25K CHRP &lt;/td&gt;&lt;td&gt;&lt;strong&gt;25,000 lbs&lt;/strong&gt;&lt;/td&gt;&lt;/tr&gt;
           &lt;/tbody&gt;
@@ -950,12 +978,12 @@
         &lt;table&gt;
           &lt;thead&gt;&lt;tr&gt;&lt;th&gt;Material&lt;/th&gt;&lt;th&gt;Capacity / Use&lt;/th&gt;&lt;/tr&gt;&lt;/thead&gt;
           &lt;tbody&gt;
-            &lt;tr&gt;&lt;td&gt;Type III nylon&lt;/td&gt;&lt;td&gt;&lt;strong&gt;550 lbs&lt;/strong&gt;&lt;/td&gt;&lt;/tr&gt;
-            &lt;tr&gt;&lt;td&gt;3/8 in hemp rope&lt;/td&gt;&lt;td&gt;&lt;strong&gt;3,180 lbs&lt;/strong&gt;&lt;/td&gt;&lt;/tr&gt;
-            &lt;tr&gt;&lt;td&gt;7/16 in nylon rope&lt;/td&gt;&lt;td&gt;&lt;strong&gt;4,500 lbs&lt;/strong&gt;&lt;/td&gt;&lt;/tr&gt;
-            &lt;tr&gt;&lt;td&gt;1/2 in tubular nylon&lt;/td&gt;&lt;td&gt;&lt;strong&gt;1,000 lbs&lt;/strong&gt;&lt;/td&gt;&lt;/tr&gt;
-            &lt;tr&gt;&lt;td&gt;1/4 in cotton webbing&lt;/td&gt;&lt;td&gt;&lt;strong&gt;80 lbs&lt;/strong&gt;&lt;/td&gt;&lt;/tr&gt;
-            &lt;tr&gt;&lt;td&gt;2 in tape&lt;/td&gt;&lt;td&gt;&lt;strong&gt;80 lbs per wrap&lt;/strong&gt;&lt;/td&gt;&lt;/tr&gt;
+            &lt;tr&gt;&lt;td&gt;Type III nylon&lt;/td&gt;&lt;td&gt;&lt;strong&gt;550 lbs&lt;/strong&gt;; round/smooth; tie and secure portions of loads.&lt;/td&gt;&lt;/tr&gt;
+            &lt;tr&gt;&lt;td&gt;3/8 in hemp rope&lt;/td&gt;&lt;td&gt;&lt;strong&gt;3,180 lbs&lt;/strong&gt;; can secure items in place of 7/16 in nylon rope.&lt;/td&gt;&lt;/tr&gt;
+            &lt;tr&gt;&lt;td&gt;7/16 in nylon rope&lt;/td&gt;&lt;td&gt;&lt;strong&gt;4,500 lbs&lt;/strong&gt;; cargo-net collar, securing items, rappelling, hip rappel seats.&lt;/td&gt;&lt;/tr&gt;
+            &lt;tr&gt;&lt;td&gt;1/2 in tubular nylon&lt;/td&gt;&lt;td&gt;&lt;strong&gt;1,000 lbs&lt;/strong&gt;; securing equipment and excess.&lt;/td&gt;&lt;/tr&gt;
+            &lt;tr&gt;&lt;td&gt;1/4 in cotton webbing&lt;/td&gt;&lt;td&gt;&lt;strong&gt;80 lbs&lt;/strong&gt;; flat/rough; breakaway material.&lt;/td&gt;&lt;/tr&gt;
+            &lt;tr&gt;&lt;td&gt;2 in pressure-sensitive tape&lt;/td&gt;&lt;td&gt;&lt;strong&gt;80 lbs per wrap&lt;/strong&gt;; shatterproof glass/plastic, pad material, secure excess, breakaways.&lt;/td&gt;&lt;/tr&gt;
             &lt;tr&gt;&lt;td&gt;Breakaway material&lt;/td&gt;&lt;td&gt;One wrap of 1/4 in cotton webbing or 2 in tape.&lt;/td&gt;&lt;/tr&gt;
           &lt;/tbody&gt;
         &lt;/table&gt;
@@ -969,8 +997,8 @@
         &lt;table&gt;
           &lt;thead&gt;&lt;tr&gt;&lt;th&gt;Item&lt;/th&gt;&lt;th&gt;Study Data&lt;/th&gt;&lt;/tr&gt;&lt;/thead&gt;
           &lt;tbody&gt;
-            &lt;tr&gt;&lt;td&gt;&lt;strong&gt;5K Cargo Net&lt;/strong&gt;&lt;/td&gt;&lt;td&gt;&lt;strong&gt;15 ft × 15 ft&lt;/strong&gt;; OD green; 5K net link count with 10K sling set = &lt;strong&gt;3&lt;/strong&gt;.&lt;/td&gt;&lt;/tr&gt;
-            &lt;tr&gt;&lt;td&gt;&lt;strong&gt;10K Cargo Net&lt;/strong&gt;&lt;/td&gt;&lt;td&gt;&lt;strong&gt;18 ft × 18 ft&lt;/strong&gt;; load-bearing zone &lt;strong&gt;6 ft × 6 ft&lt;/strong&gt;; mesh &lt;strong&gt;7.5 in × 7.5 in&lt;/strong&gt;.&lt;/td&gt;&lt;/tr&gt;
+            &lt;tr&gt;&lt;td&gt;&lt;strong&gt;5K Cargo Net&lt;/strong&gt;&lt;/td&gt;&lt;td&gt;Weight &lt;strong&gt;58 lbs&lt;/strong&gt;; &lt;strong&gt;15 ft × 15 ft&lt;/strong&gt;; load-bearing zone &lt;strong&gt;5 ft × 5 ft&lt;/strong&gt;; mesh &lt;strong&gt;6 in × 6 in&lt;/strong&gt;; OD green new / yellow used.&lt;/td&gt;&lt;/tr&gt;
+            &lt;tr&gt;&lt;td&gt;&lt;strong&gt;10K Cargo Net&lt;/strong&gt;&lt;/td&gt;&lt;td&gt;Weight &lt;strong&gt;96 lbs&lt;/strong&gt;; &lt;strong&gt;18 ft × 18 ft&lt;/strong&gt;; load-bearing zone &lt;strong&gt;6 ft × 6 ft&lt;/strong&gt;; mesh &lt;strong&gt;7.5 in × 7.5 in&lt;/strong&gt;; black new / gray used.&lt;/td&gt;&lt;/tr&gt;
             &lt;tr&gt;&lt;td&gt;&lt;strong&gt;Load-bearing zone&lt;/strong&gt;&lt;/td&gt;&lt;td&gt;&lt;strong&gt;75%&lt;/strong&gt; of load must be inside.&lt;/td&gt;&lt;/tr&gt;
             &lt;tr&gt;&lt;td&gt;&lt;strong&gt;Cargo net hook sequence&lt;/strong&gt;&lt;/td&gt;&lt;td&gt;&lt;strong&gt;1, 3, 2, 4&lt;/strong&gt; or &lt;strong&gt;1, 3, 4, 2&lt;/strong&gt;.&lt;/td&gt;&lt;/tr&gt;
             &lt;tr&gt;&lt;td&gt;&lt;strong&gt;Cargo net breakaways&lt;/strong&gt;&lt;/td&gt;&lt;td&gt;&lt;strong&gt;3 breakaways&lt;/strong&gt;.&lt;/td&gt;&lt;/tr&gt;
@@ -979,10 +1007,10 @@
       &lt;/div&gt;
       &lt;h3&gt;A-22 Cargo Bag&lt;/h3&gt;
       &lt;div class=&quot;grid&quot;&gt;
-        &lt;div class=&quot;mini-card&quot;&gt;&lt;strong&gt;Max Weight&lt;/strong&gt;&lt;span class=&quot;flash&quot;&gt;2,200 lbs&lt;/span&gt;&lt;/div&gt;
-        &lt;div class=&quot;mini-card&quot;&gt;&lt;strong&gt;Link Count&lt;/strong&gt;&lt;span class=&quot;flash&quot;&gt;3&lt;/span&gt;&lt;/div&gt;
+        &lt;div class=&quot;mini-card&quot;&gt;&lt;strong&gt;Weights&lt;/strong&gt;Minimum &lt;span class=&quot;flash&quot;&gt;500 lbs&lt;/span&gt;; maximum &lt;span class=&quot;flash&quot;&gt;2,200 lbs&lt;/span&gt;; empty &lt;span class=&quot;flash&quot;&gt;58 lbs&lt;/span&gt;.&lt;/div&gt;
+        &lt;div class=&quot;mini-card&quot;&gt;&lt;strong&gt;Link Count&lt;/strong&gt;10K: &lt;span class=&quot;flash&quot;&gt;3&lt;/span&gt;; 25K: &lt;span class=&quot;flash&quot;&gt;5&lt;/span&gt;.&lt;/div&gt;
+        &lt;div class=&quot;mini-card&quot;&gt;&lt;strong&gt;Type III Nylon&lt;/strong&gt;Cut four sections, each &lt;span class=&quot;flash&quot;&gt;12 ft&lt;/span&gt; long.&lt;/div&gt;
         &lt;div class=&quot;mini-card&quot;&gt;&lt;strong&gt;Lacing Ropes&lt;/strong&gt;Type III nylon, 3/8 in hemp, or 7/16 in nylon.&lt;/div&gt;
-        &lt;div class=&quot;mini-card&quot;&gt;&lt;strong&gt;Excess Ropes&lt;/strong&gt;Tie in bow knot and secure excess with 2 in tape.&lt;/div&gt;
       &lt;/div&gt;
       &lt;h3&gt;Fuel Blivets&lt;/h3&gt;
       &lt;div class=&quot;table-wrap compact&quot;&gt;
@@ -999,9 +1027,10 @@
         &lt;table&gt;
           &lt;thead&gt;&lt;tr&gt;&lt;th&gt;Load&lt;/th&gt;&lt;th&gt;Weights / ACL&lt;/th&gt;&lt;th&gt;Link Count / Notes&lt;/th&gt;&lt;/tr&gt;&lt;/thead&gt;
           &lt;tbody&gt;
-            &lt;tr&gt;&lt;td&gt;&lt;strong&gt;M1151 up-armored HMMWV&lt;/strong&gt;&lt;/td&gt;&lt;td&gt;Empty &lt;strong&gt;10,300 lbs&lt;/strong&gt;; max &lt;strong&gt;12,100 lbs&lt;/strong&gt;; Fragment 5 max &lt;strong&gt;13,100 lbs&lt;/strong&gt;.&lt;/td&gt;&lt;td&gt;Empty: &lt;strong&gt;30 front / 3 rear&lt;/strong&gt;. Full: &lt;strong&gt;20 front / 3 rear&lt;/strong&gt;. Tow pintle secured with pintle cotter pin, Type III nylon, and 2 in tape.&lt;/td&gt;&lt;/tr&gt;
-            &lt;tr&gt;&lt;td&gt;&lt;strong&gt;M149A2 water trailer&lt;/strong&gt;&lt;/td&gt;&lt;td&gt;—&lt;/td&gt;&lt;td&gt;Link count: &lt;strong&gt;75 front / 90 rear&lt;/strong&gt;. Flown &lt;strong&gt;rearward&lt;/strong&gt;. Uses &lt;strong&gt;1 cluster breakaway&lt;/strong&gt;.&lt;/td&gt;&lt;/tr&gt;
-            &lt;tr&gt;&lt;td&gt;&lt;strong&gt;M1102 high mobility trailer&lt;/strong&gt;&lt;/td&gt;&lt;td&gt;ACL &lt;strong&gt;2,740 lbs&lt;/strong&gt;.&lt;/td&gt;&lt;td&gt;With 10K sling set: &lt;strong&gt;20 front / 3 rear&lt;/strong&gt;.&lt;/td&gt;&lt;/tr&gt;
+            &lt;tr&gt;&lt;td&gt;&lt;strong&gt;M1101 trailer&lt;/strong&gt;&lt;/td&gt;&lt;td&gt;Minimum &lt;strong&gt;1,460 lbs&lt;/strong&gt;; maximum &lt;strong&gt;3,400 lbs&lt;/strong&gt;.&lt;/td&gt;&lt;td&gt;10K: &lt;strong&gt;20 front / 3 rear&lt;/strong&gt;. 25K: &lt;strong&gt;17 front / 5 rear&lt;/strong&gt;.&lt;/td&gt;&lt;/tr&gt;
+            &lt;tr&gt;&lt;td&gt;&lt;strong&gt;M1102 high mobility trailer&lt;/strong&gt;&lt;/td&gt;&lt;td&gt;Minimum &lt;strong&gt;1,460 lbs&lt;/strong&gt;; maximum &lt;strong&gt;4,200 lbs&lt;/strong&gt;.&lt;/td&gt;&lt;td&gt;10K: &lt;strong&gt;20 front / 3 rear&lt;/strong&gt;. 25K: &lt;strong&gt;17 front / 5 rear&lt;/strong&gt;.&lt;/td&gt;&lt;/tr&gt;
+            &lt;tr&gt;&lt;td&gt;&lt;strong&gt;M1151 up-armored HMMWV&lt;/strong&gt;&lt;/td&gt;&lt;td&gt;Empty &lt;strong&gt;10,300 lbs&lt;/strong&gt;; ACL &lt;strong&gt;1,800 lbs&lt;/strong&gt;; max &lt;strong&gt;12,100 lbs&lt;/strong&gt;.&lt;/td&gt;&lt;td&gt;Empty: &lt;strong&gt;30 front / 3 rear&lt;/strong&gt;. Full: &lt;strong&gt;20 front / 3 rear&lt;/strong&gt;. Breakaways: &lt;strong&gt;4&lt;/strong&gt; (2 front, 2 rear). Fuel level max 75%; shatterproof with 2 in tape; uses only the 25K sling set.&lt;/td&gt;&lt;/tr&gt;
+            &lt;tr&gt;&lt;td&gt;&lt;strong&gt;M149A2 water trailer&lt;/strong&gt;&lt;/td&gt;&lt;td&gt;Empty &lt;strong&gt;2,800 lbs&lt;/strong&gt;; loaded &lt;strong&gt;6,320 lbs&lt;/strong&gt;.&lt;/td&gt;&lt;td&gt;Link count: &lt;strong&gt;75 front / 90 rear&lt;/strong&gt;. Flown &lt;strong&gt;rearward&lt;/strong&gt;. Uses &lt;strong&gt;1 breakaway&lt;/strong&gt;.&lt;/td&gt;&lt;/tr&gt;
           &lt;/tbody&gt;
         &lt;/table&gt;
       &lt;/div&gt;
@@ -1014,10 +1043,12 @@
       &lt;ul class=&quot;two-col&quot;&gt;
         &lt;li&gt;Inspect sling-load equipment &lt;strong&gt;before and after each use&lt;/strong&gt; and/or &lt;strong&gt;every 6 months&lt;/strong&gt;.&lt;/li&gt;
         &lt;li&gt;Qualified inspector: &lt;strong&gt;E-4/SPC or above&lt;/strong&gt; and Pathfinder, Air Assault, or SLICC graduate.&lt;/li&gt;
+        &lt;li&gt;Three phases: preparation/rigging, inspection of preparation/rigging, sling-load operation.&lt;/li&gt;
+        &lt;li&gt;Required personnel: signal person, static wand person, hookup person.&lt;/li&gt;
         &lt;li&gt;Clean metal sling-set portions with &lt;strong&gt;wire brush, emery cloth, or green scrub pad&lt;/strong&gt;.&lt;/li&gt;
         &lt;li&gt;Sling-leg rope material: &lt;strong&gt;double-braided nylon&lt;/strong&gt;.&lt;/li&gt;
         &lt;li&gt;If excess links are &lt;strong&gt;10 or more&lt;/strong&gt;, secure with &lt;strong&gt;Type III nylon&lt;/strong&gt;.&lt;/li&gt;
-        &lt;li&gt;Proper drag surface is achieved using the &lt;strong&gt;proper link count&lt;/strong&gt;.&lt;/li&gt;
+        &lt;li&gt;Proper nose-down attitude is achieved by using the &lt;strong&gt;proper link count&lt;/strong&gt;.&lt;/li&gt;
       &lt;/ul&gt;
       &lt;h3&gt;Unserviceable Criteria&lt;/h3&gt;
       &lt;div class=&quot;table-wrap compact&quot;&gt;
@@ -1034,11 +1065,11 @@
       &lt;div class=&quot;grid&quot;&gt;
         &lt;div class=&quot;mini-card&quot;&gt;&lt;strong&gt;Static Discharge Wand&lt;/strong&gt;Discharges static electricity from the aircraft.&lt;/div&gt;
         &lt;div class=&quot;mini-card&quot;&gt;&lt;strong&gt;Grounding Rod&lt;/strong&gt;6–12 in deep at 45° angle, facing away from the load.&lt;/div&gt;
-        &lt;div class=&quot;mini-card&quot;&gt;&lt;strong&gt;Ground Crew Uniform&lt;/strong&gt;Helmet, goggles, ear plugs, gloves, sleeves down, ID card, ID tags.&lt;/div&gt;
+        &lt;div class=&quot;mini-card&quot;&gt;&lt;strong&gt;Ground Crew PPE&lt;/strong&gt;ACH with chinstrap fastened, goggles, earplugs, gloves, sleeves rolled down and buttoned.&lt;/div&gt;
       &lt;/div&gt;
       &lt;h3&gt;Stability&lt;/h3&gt;
       &lt;div class=&quot;note warn&quot;&gt;
-        &lt;strong&gt;HAT affects in-flight stability:&lt;/strong&gt; Humidity, Altitude, Temperature. Improve stability by increasing weight, redistributing load, adjusting link count, adding drogue chute, or reducing airspeed. Reducing airspeed is the least preferred method.
+        &lt;strong&gt;Improve in-flight stability:&lt;/strong&gt; Increase load weight, redistribute weight with a load plan, adjust link count, install a drogue chute, or reduce airspeed.
       &lt;/div&gt;
     &lt;/section&gt;
 
@@ -1048,19 +1079,19 @@
         &lt;li&gt;&lt;strong&gt;TM 4-48.09&lt;/strong&gt; = basic ops/equipment.&lt;/li&gt;
         &lt;li&gt;&lt;strong&gt;TM 4-48.10&lt;/strong&gt; = single-point rigging.&lt;/li&gt;
         &lt;li&gt;&lt;strong&gt;TM 4-48.11&lt;/strong&gt; = dual-point rigging.&lt;/li&gt;
-        &lt;li&gt;&lt;strong&gt;Minimum load&lt;/strong&gt; = 500 lbs.&lt;/li&gt;
+        &lt;li&gt;&lt;strong&gt;A-22 minimum&lt;/strong&gt; = 500 lbs.&lt;/li&gt;
         &lt;li&gt;&lt;strong&gt;UH-60A&lt;/strong&gt; = 8K hook.&lt;/li&gt;
         &lt;li&gt;&lt;strong&gt;UH-60L/M&lt;/strong&gt; = 9K hook.&lt;/li&gt;
         &lt;li&gt;&lt;strong&gt;CH-47 fore/aft&lt;/strong&gt; = 17K each.&lt;/li&gt;
         &lt;li&gt;&lt;strong&gt;CH-47 center&lt;/strong&gt; = 26K, no manual release.&lt;/li&gt;
         &lt;li&gt;&lt;strong&gt;10K sling set&lt;/strong&gt; = 52 lbs, 110–115 chain links.&lt;/li&gt;
         &lt;li&gt;&lt;strong&gt;25K sling set&lt;/strong&gt; = 114 lbs, 84–88 chain links.&lt;/li&gt;
-        &lt;li&gt;&lt;strong&gt;A-22&lt;/strong&gt; = 2,200 lbs, link count 3.&lt;/li&gt;
+        &lt;li&gt;&lt;strong&gt;A-22&lt;/strong&gt; = 500 min / 2,200 max / 58 empty; LC 3 with 10K, LC 5 with 25K.&lt;/li&gt;
         &lt;li&gt;&lt;strong&gt;Single fuel blivet&lt;/strong&gt; = 4,200 max, 275 empty, LC 3.&lt;/li&gt;
-        &lt;li&gt;&lt;strong&gt;M1151&lt;/strong&gt; = 10,300 empty / 12,100 max / 13,100 Frag 5.&lt;/li&gt;
-        &lt;li&gt;&lt;strong&gt;M149A2&lt;/strong&gt; = 75 front / 90 rear / flown rearward.&lt;/li&gt;
-        &lt;li&gt;&lt;strong&gt;M1102&lt;/strong&gt; = 2,740 ACL / 20 front / 3 rear.&lt;/li&gt;
-        &lt;li&gt;&lt;strong&gt;HAT&lt;/strong&gt; = Humidity, Altitude, Temperature.&lt;/li&gt;
+        &lt;li&gt;&lt;strong&gt;M1151&lt;/strong&gt; = 10,300 empty / 1,800 ACL / 12,100 max; LC 30 front empty, 20 front full, 3 rear.&lt;/li&gt;
+        &lt;li&gt;&lt;strong&gt;M149A2&lt;/strong&gt; = 2,800 empty / 6,320 loaded / 75 front / 90 rear / flown rearward.&lt;/li&gt;
+        &lt;li&gt;&lt;strong&gt;M1102&lt;/strong&gt; = 1,460 min / 4,200 max; 10K LC 20 front / 3 rear, 25K LC 17 front / 5 rear.&lt;/li&gt;
+        &lt;li&gt;&lt;strong&gt;Lift capacity factors&lt;/strong&gt; = Wind, Humidity, Altitude, Temperature, Fuel.&lt;/li&gt;
       &lt;/ul&gt;
     &lt;/section&gt;
 
@@ -1069,8 +1100,104 @@
 &lt;/body&gt;
 &lt;/html&gt;
 "></iframe>
+    <section class="quiz-panel" id="quizPanel" aria-labelledby="quizTitle">
+      <div class="quiz-header">
+        <div class="quiz-header-inner">
+          <h1 id="quizTitle">Phase 2 Quiz</h1>
+          <p>Five random fill-in questions from the numeric Phase 2 sling-load facts. Enter the number, then submit to check your answers.</p>
+        </div>
+      </div>
+      <div class="quiz-wrap">
+        <div class="quiz-actions">
+          <button class="quiz-action" type="button" id="newQuizBtn">New Random Quiz</button>
+          <button class="quiz-action secondary" type="button" id="submitQuizBtn">Submit Answers</button>
+        </div>
+        <div class="quiz-score" id="quizScore" role="status"></div>
+        <div id="quizQuestions"></div>
+      </div>
+    </section>
   </div>
   <script>
+    const quizPool = [
+      { prompt: 'Small clevis rated capacity', answer: '6,250 lbs', answers: ['6250'] },
+      { prompt: 'Medium clevis rated capacity', answer: '6,250 lbs', answers: ['6250'] },
+      { prompt: '5/8 in screw pin clevis rated capacity', answer: '4,420 lbs', answers: ['4420'] },
+      { prompt: 'Small screw pin clevis rated capacity', answer: '8,650 lbs', answers: ['8650'] },
+      { prompt: 'Large clevis rated capacity', answer: '12,500 lbs', answers: ['12500'] },
+      { prompt: 'Platform clevis rated capacity', answer: '7,000 lbs', answers: ['7000'] },
+      { prompt: 'Net apex fitting rated capacity', answer: '10,000 lbs', answers: ['10000'] },
+      { prompt: 'Type IV connector link rated capacity', answer: '12,500 lbs', answers: ['12500'] },
+      { prompt: 'CGU-1B rated capacity', answer: '5,000 lbs', answers: ['5000'] },
+      { prompt: 'Black load binder rated capacity', answer: '10,000 lbs', answers: ['10000'] },
+      { prompt: 'Silver load binder rated capacity', answer: '5,000 lbs', answers: ['5000'] },
+      { prompt: 'A7A strap rated capacity', answer: '500 lbs', answers: ['500'] },
+      { prompt: '24 in suspension web strap rated capacity', answer: '550 lbs', answers: ['550'] },
+      { prompt: 'Aerial delivery sling rated capacity', answer: '10,000 lbs', answers: ['10000'] },
+      { prompt: 'Type III nylon rated capacity', answer: '550 lbs', answers: ['550'] },
+      { prompt: '3/8 in hemp rope rated capacity', answer: '3,180 lbs', answers: ['3180'] },
+      { prompt: '7/16 in nylon rope rated capacity', answer: '4,500 lbs', answers: ['4500'] },
+      { prompt: '1/2 in tubular nylon rated capacity', answer: '1,000 lbs', answers: ['1000'] },
+      { prompt: '1/4 in cotton webbing rated capacity', answer: '80 lbs', answers: ['80'] },
+      { prompt: '2 in pressure-sensitive tape capacity per wrap', answer: '80 lbs', answers: ['80'] },
+      { prompt: '10K sling set weight', answer: '52 lbs', answers: ['52'] },
+      { prompt: '10K sling set chain link range', answer: '110-115 links', answers: ['110-115', '110to115'] },
+      { prompt: '10K sling set rope length', answer: '12 ft', answers: ['12'] },
+      { prompt: '10K apex pin diameter', answer: '1 1/8 in', answers: ['1 1/8', '1.125', '11/8'] },
+      { prompt: '25K sling set weight', answer: '114 lbs', answers: ['114'] },
+      { prompt: '25K sling set chain link range', answer: '84-88 links', answers: ['84-88', '84to88'] },
+      { prompt: '25K sling set rope length', answer: '12 ft', answers: ['12'] },
+      { prompt: '25K apex pin diameter', answer: '1 1/2 in', answers: ['1 1/2', '1.5', '11/2'] },
+      { prompt: 'Single 25K sling leg rated capacity', answer: '6,250 lbs', answers: ['6250'] },
+      { prompt: 'UH-60A external load capacity', answer: '8,000 lbs', answers: ['8000'] },
+      { prompt: 'UH-60L/M external load capacity', answer: '9,000 lbs', answers: ['9000'] },
+      { prompt: 'CH-47 front or rear hook capacity', answer: '17,000 lbs', answers: ['17000'] },
+      { prompt: 'CH-47 center hook capacity', answer: '26,000 lbs', answers: ['26000'] },
+      { prompt: 'CH-47 dual front and rear hook capacity', answer: '25,000 lbs', answers: ['25000'] },
+      { prompt: 'A-22 cargo bag minimum weight', answer: '500 lbs', answers: ['500'] },
+      { prompt: 'A-22 cargo bag maximum weight', answer: '2,200 lbs', answers: ['2200'] },
+      { prompt: 'A-22 cargo bag empty weight', answer: '58 lbs', answers: ['58'] },
+      { prompt: 'A-22 link count with 10K sling set', answer: '3', answers: ['3'] },
+      { prompt: 'A-22 link count with 25K sling set', answer: '5', answers: ['5'] },
+      { prompt: 'A-22 Type III nylon section length', answer: '12 ft', answers: ['12'] },
+      { prompt: '5K cargo net weight', answer: '58 lbs', answers: ['58'] },
+      { prompt: '5K cargo net size', answer: '15 ft x 15 ft', answers: ['15x15', '15by15'] },
+      { prompt: '5K cargo net load-bearing zone', answer: '5 ft x 5 ft', answers: ['5x5', '5by5'] },
+      { prompt: '5K cargo net mesh size', answer: '6 in x 6 in', answers: ['6x6', '6by6'] },
+      { prompt: '10K cargo net weight', answer: '96 lbs', answers: ['96'] },
+      { prompt: '10K cargo net size', answer: '18 ft x 18 ft', answers: ['18x18', '18by18'] },
+      { prompt: '10K cargo net load-bearing zone', answer: '6 ft x 6 ft', answers: ['6x6', '6by6'] },
+      { prompt: '10K cargo net mesh size', answer: '7.5 in x 7.5 in', answers: ['7.5x7.5', '7.5by7.5'] },
+      { prompt: 'Cargo-net load-bearing zone requirement', answer: '75%', answers: ['75'] },
+      { prompt: 'Cargo-net breakaways', answer: '3', answers: ['3'] },
+      { prompt: 'Single 500-gal fuel blivet maximum weight', answer: '4,200 lbs', answers: ['4200'] },
+      { prompt: 'Single 500-gal fuel blivet empty weight', answer: '275 lbs', answers: ['275'] },
+      { prompt: 'Single 500-gal fuel blivet link count', answer: '3', answers: ['3'] },
+      { prompt: 'Four 500-gal fuel blivets maximum weight', answer: '16,800 lbs', answers: ['16800'] },
+      { prompt: 'M1101 trailer minimum weight', answer: '1,460 lbs', answers: ['1460'] },
+      { prompt: 'M1101 trailer maximum weight', answer: '3,400 lbs', answers: ['3400'] },
+      { prompt: 'M1101 10K front/rear link count', answer: '20 front / 3 rear', answers: ['20/3', '20and3'] },
+      { prompt: 'M1101 25K front/rear link count', answer: '17 front / 5 rear', answers: ['17/5', '17and5'] },
+      { prompt: 'M1102 trailer minimum weight', answer: '1,460 lbs', answers: ['1460'] },
+      { prompt: 'M1102 trailer maximum weight', answer: '4,200 lbs', answers: ['4200'] },
+      { prompt: 'M1102 10K front/rear link count', answer: '20 front / 3 rear', answers: ['20/3', '20and3'] },
+      { prompt: 'M1102 25K front/rear link count', answer: '17 front / 5 rear', answers: ['17/5', '17and5'] },
+      { prompt: 'M1151 empty weight', answer: '10,300 lbs', answers: ['10300'] },
+      { prompt: 'M1151 ACL', answer: '1,800 lbs', answers: ['1800'] },
+      { prompt: 'M1151 maximum weight', answer: '12,100 lbs', answers: ['12100'] },
+      { prompt: 'M1151 empty front link count', answer: '30', answers: ['30'] },
+      { prompt: 'M1151 full front link count', answer: '20', answers: ['20'] },
+      { prompt: 'M1151 rear link count', answer: '3', answers: ['3'] },
+      { prompt: 'M1151 total breakaways', answer: '4', answers: ['4'] },
+      { prompt: 'M1151 maximum fuel level', answer: '75%', answers: ['75'] },
+      { prompt: 'M149A2 water trailer empty weight', answer: '2,800 lbs', answers: ['2800'] },
+      { prompt: 'M149A2 water trailer loaded weight', answer: '6,320 lbs', answers: ['6320'] },
+      { prompt: 'M149A2 front/rear link count', answer: '75 front / 90 rear', answers: ['75/90', '75and90'] },
+      { prompt: 'M149A2 breakaways', answer: '1', answers: ['1'] },
+      { prompt: 'M149A2 breakaways', answer: '1', answers: ['1'] }
+    ];
+
+    let currentQuizQuestions = [];
+
     function getHeaderOffset() {
       const switchBar = document.querySelector('.switch-bar');
       return switchBar ? switchBar.getBoundingClientRect().height + 12 : 0;
@@ -1120,19 +1247,102 @@
       }
     }
 
+    function normalizeQuizAnswer(value) {
+      return String(value)
+        .toLowerCase()
+        .replace(/[–—]/g, '-')
+        .replace(/\s+to\s+/g, 'to')
+        .replace(/\s+and\s+/g, 'and')
+        .replace(/\b(lbs?|pax|litters?|links?|kts|hrs?|meters?|metres?|m|ft|in|front|rear|lc|with|without|seats?|percent)\b/g, '')
+        .replace(/[,%\s]/g, '')
+        .trim();
+    }
+
+    function shuffleQuizPool() {
+      return quizPool
+        .map(function (question) { return { question: question, sort: Math.random() }; })
+        .sort(function (a, b) { return a.sort - b.sort; })
+        .map(function (entry) { return entry.question; });
+    }
+
+    function renderQuiz() {
+      const questionsWrap = document.getElementById('quizQuestions');
+      const score = document.getElementById('quizScore');
+      currentQuizQuestions = shuffleQuizPool().slice(0, 5);
+      score.classList.remove('active');
+      score.textContent = '';
+      questionsWrap.innerHTML = currentQuizQuestions.map(function (question, index) {
+        return [
+          '<div class="quiz-card" data-index="' + index + '">',
+          '<label for="quizAnswer' + index + '">' + (index + 1) + '. ' + question.prompt + '</label>',
+          '<input id="quizAnswer' + index + '" type="text" autocomplete="off" placeholder="enter value" />',
+          '<div class="quiz-feedback" id="quizFeedback' + index + '"></div>',
+          '</div>'
+        ].join('');
+      }).join('');
+    }
+
+    function submitQuiz() {
+      let correctCount = 0;
+      currentQuizQuestions.forEach(function (question, index) {
+        const input = document.getElementById('quizAnswer' + index);
+        const feedback = document.getElementById('quizFeedback' + index);
+        const normalizedInput = normalizeQuizAnswer(input.value);
+        const acceptedAnswers = question.answers.map(normalizeQuizAnswer);
+        const isCorrect = acceptedAnswers.includes(normalizedInput);
+        if (isCorrect) correctCount += 1;
+
+        feedback.className = 'quiz-feedback ' + (isCorrect ? 'correct' : 'wrong');
+        feedback.textContent = isCorrect
+          ? 'Correct: ' + question.answer
+          : 'Wrong. Correct answer: ' + question.answer;
+      });
+
+      const score = document.getElementById('quizScore');
+      score.textContent = 'Score: ' + correctCount + ' / ' + currentQuizQuestions.length;
+      score.classList.add('active');
+    }
+
+    function showQuiz() {
+      const phase1Frame = document.getElementById('phase1Frame');
+      const phase2Frame = document.getElementById('phase2Frame');
+      const quizPanel = document.getElementById('quizPanel');
+      const phase1Btn = document.getElementById('phase1Btn');
+      const phase2Btn = document.getElementById('phase2Btn');
+      const quizBtn = document.getElementById('quizBtn');
+
+      phase1Frame.classList.remove('active');
+      phase2Frame.classList.remove('active');
+      quizPanel.classList.add('active');
+      phase1Btn.classList.remove('active');
+      phase2Btn.classList.remove('active');
+      quizBtn.classList.add('active');
+      phase1Btn.setAttribute('aria-pressed', 'false');
+      phase2Btn.setAttribute('aria-pressed', 'false');
+      quizBtn.setAttribute('aria-pressed', 'true');
+      document.title = 'Air Assault Phase 2 Quiz';
+      if (!currentQuizQuestions.length) renderQuiz();
+      window.scrollTo({ top: 0, behavior: 'auto' });
+    }
+
     function showPhase(phase) {
       const phase1Frame = document.getElementById('phase1Frame');
       const phase2Frame = document.getElementById('phase2Frame');
+      const quizPanel = document.getElementById('quizPanel');
       const phase1Btn = document.getElementById('phase1Btn');
       const phase2Btn = document.getElementById('phase2Btn');
+      const quizBtn = document.getElementById('quizBtn');
       const isPhase2 = phase === 'phase2';
       const activeFrame = isPhase2 ? phase2Frame : phase1Frame;
       phase1Frame.classList.toggle('active', !isPhase2);
       phase2Frame.classList.toggle('active', isPhase2);
+      quizPanel.classList.remove('active');
       phase1Btn.classList.toggle('active', !isPhase2);
       phase2Btn.classList.toggle('active', isPhase2);
+      quizBtn.classList.remove('active');
       phase1Btn.setAttribute('aria-pressed', String(!isPhase2));
       phase2Btn.setAttribute('aria-pressed', String(isPhase2));
+      quizBtn.setAttribute('aria-pressed', 'false');
       document.title = isPhase2 ? 'Air Assault Phase II Study Sheet' : 'Air Assault Phase I Study Sheet';
       try {
         activeFrame.contentWindow.scrollTo(0, 0);
@@ -1156,6 +1366,9 @@
       setTimeout(resizeVisibleFrame, 50);
       setTimeout(resizeVisibleFrame, 300);
       setTimeout(resizeVisibleFrame, 1000);
+      document.getElementById('newQuizBtn').addEventListener('click', renderQuiz);
+      document.getElementById('submitQuizBtn').addEventListener('click', submitQuiz);
+      renderQuiz();
     });
     window.addEventListener('resize', resizeVisibleFrame);
   </script>
