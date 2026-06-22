@@ -34,6 +34,7 @@
     .quiz-card { background: white; border: 1px solid #d9e1e8; border-radius: 14px; box-shadow: 0 10px 24px rgba(15, 23, 42, .08); padding: 18px; margin-bottom: 14px; }
     .quiz-card label { display: block; font-weight: 800; color: #115e59; margin-bottom: 8px; }
     .quiz-card input { width: 100%; border: 1px solid #cbd5e1; border-radius: 10px; padding: 12px 13px; font-size: 1rem; }
+    .mc-question { margin: 0 0 12px; color: #115e59; font-size: 1rem; font-weight: 900; line-height: 1.35; }
     .deficiency-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: 14px; }
     .deficiency-card h2 { margin: 0 0 10px; color: #115e59; font-size: 1.15rem; }
     .deficiency-card ul { margin: 0; padding-left: 20px; }
@@ -1127,6 +1128,7 @@
       <div class="quiz-wrap">
         <div class="quiz-mode-tabs" role="tablist" aria-label="Quiz modes">
           <button class="quiz-mode-tab active" type="button" id="numberQuizModeBtn" aria-selected="true">Number Quiz</button>
+          <button class="quiz-mode-tab" type="button" id="multipleChoiceModeBtn" aria-selected="false">Multiple Choice</button>
           <button class="quiz-mode-tab" type="button" id="slingloadModeBtn" aria-selected="false">Slingload Test</button>
           <button class="quiz-mode-tab" type="button" id="deficienciesModeBtn" aria-selected="false">Possible Deficiencies</button>
         </div>
@@ -1137,6 +1139,14 @@
           </div>
           <div class="quiz-score" id="quizScore" role="status"></div>
           <div id="quizQuestions"></div>
+        </div>
+        <div class="quiz-mode" id="multipleChoiceMode">
+          <div class="quiz-actions">
+            <button class="quiz-action" type="button" id="newMultipleChoiceBtn">New Multiple Choice Quiz</button>
+            <button class="quiz-action secondary" type="button" id="submitMultipleChoiceBtn">Submit Answers</button>
+          </div>
+          <div class="quiz-score" id="multipleChoiceScore" role="status"></div>
+          <div id="multipleChoiceQuestions"></div>
         </div>
         <div class="quiz-mode" id="slingloadTestMode">
           <div class="quiz-actions">
@@ -1245,6 +1255,59 @@
     const aircraftTypes = ['UH-60', 'CH-47'];
     const slingLegTypes = ['10K sling leg', '25K sling leg'];
     const chrpTypes = ['11K CHRP', '25K CHRP'];
+    const multipleChoicePool = [
+      { question: 'Which reference covers basic sling-load operations and equipment?', answer: 'TM 4-48.09', choices: ['TM 4-48.09', 'TM 4-48.10', 'TM 4-48.11', 'FM 3-99'] },
+      { question: 'Which reference covers single-point load rigging procedures?', answer: 'TM 4-48.10', choices: ['TM 4-48.10', 'TM 4-48.09', 'TM 4-48.11', 'ATP 4-02.2'] },
+      { question: 'Which reference covers dual-point load rigging procedures?', answer: 'TM 4-48.11', choices: ['TM 4-48.11', 'TM 4-48.10', 'TM 4-48.09', 'FM 3-04'] },
+      { question: 'What form is used when inspecting sling loads?', answer: 'DA Form 7382', choices: ['DA Form 7382', 'DA Form 2028', 'DD Form 1750', 'DA Form 5988-E'] },
+      { question: 'Where is DA Form 7382 found?', answer: 'TM 4-48.09 Appendix I', choices: ['TM 4-48.09 Appendix I', 'TM 4-48.09 Appendix D', 'TM 4-48.09 Chapter 6', 'TM 4-48.10 Appendix I'] },
+      { question: 'Where is the field-expedient static discharge wand found?', answer: 'TM 4-48.09 Appendix D', choices: ['TM 4-48.09 Appendix D', 'TM 4-48.09 Appendix I', 'TM 4-48.10 Chapter 6', 'TM 4-48.11 Appendix D'] },
+      { question: 'Which chapter covers the sling-leg damage criteria chart?', answer: 'TM 4-48.09 Chapter 6', choices: ['TM 4-48.09 Chapter 6', 'TM 4-48.09 Appendix D', 'TM 4-48.10 Chapter 6', 'TM 4-48.11 Chapter 4'] },
+      { question: 'Where do the three copies of DA Form 7382 go?', answer: 'Aviation unit, supported unit, and one tied or taped on the load', choices: ['Aviation unit, supported unit, and one tied or taped on the load', 'Aviation unit only', 'Receiving unit, convoy commander, and one on the load', 'Supported unit only'] },
+      { question: 'What are the four sling-load classifications?', answer: 'Certified, unique, prohibited, suitable', choices: ['Certified, unique, prohibited, suitable', 'Certified, stable, unstable, prohibited', 'Internal, external, dual, single', 'Routine, priority, urgent, convenience'] },
+      { question: 'What is a prohibited sling load?', answer: 'A load with unstable flight characteristics that does not fly', choices: ['A load with unstable flight characteristics that does not fly', 'A load flown for years without incident', 'A one-time load approved by an E-4', 'Any load under 500 lbs'] },
+      { question: 'Who is authorized to inspect a sling load?', answer: 'E-4/SPC or above and Pathfinder, Air Assault, or SLICC graduate', choices: ['E-4/SPC or above and Pathfinder, Air Assault, or SLICC graduate', 'Any E-3 or above', 'Only a pilot in command', 'Any soldier assigned to the receiving unit'] },
+      { question: 'What are the three units involved in sling-load operations?', answer: 'Supported unit, aviation unit, receiving unit', choices: ['Supported unit, aviation unit, receiving unit', 'PZ unit, LZ unit, convoy unit', 'Aviation unit, maintenance unit, fuel unit', 'Ground unit, air unit, medical unit'] },
+      { question: 'Which unit selects, prepares, and controls the PZ?', answer: 'Supported unit', choices: ['Supported unit', 'Aviation unit', 'Receiving unit', 'Pathfinder unit'] },
+      { question: 'Which unit selects, prepares, and controls the LZ?', answer: 'Receiving unit', choices: ['Receiving unit', 'Supported unit', 'Aviation unit', 'Inspection unit'] },
+      { question: 'What are the three phases of a sling-load operation?', answer: 'Preparation/rigging, inspection, sling-load operation', choices: ['Preparation/rigging, inspection, sling-load operation', 'Planning, rehearsing, execution', 'PZ marking, aircraft landing, derigging', 'Hookup, flight, recovery'] },
+      { question: 'How often should sling-load equipment be inspected?', answer: 'Before and after each use and/or every 6 months', choices: ['Before and after each use and/or every 6 months', 'Once per year', 'Only before each use', 'Every 30 days only'] },
+      { question: 'What achieves the proper nose-down attitude?', answer: 'Proper link count', choices: ['Proper link count', 'More breakaways', 'A larger clevis', 'A 25K CHRP'] },
+      { question: 'What are lift capacity factors?', answer: 'Wind, humidity, altitude, temperature, fuel', choices: ['Wind, humidity, altitude, temperature, fuel', 'Weight, balance, center of gravity, speed, altitude', 'Formation, loads, obstacles, routes, surface', 'Humidity, altitude, temperature only'] },
+      { question: 'What is the UH-60A external load capacity?', answer: '8,000 lbs', choices: ['8,000 lbs', '9,000 lbs', '17,000 lbs', '26,000 lbs'] },
+      { question: 'What is the UH-60L/M external load capacity?', answer: '9,000 lbs', choices: ['9,000 lbs', '8,000 lbs', '17,000 lbs', '25,000 lbs'] },
+      { question: 'What is the CH-47 center hook capacity?', answer: '26,000 lbs', choices: ['26,000 lbs', '17,000 lbs', '25,000 lbs', '9,000 lbs'] },
+      { question: 'Which CH-47 cargo hook cannot be released manually?', answer: 'Center hook', choices: ['Center hook', 'Fore hook', 'Aft hook', 'Dual hooks'] },
+      { question: 'For a UH-60 with a 10K sling set, what is the spacer rule?', answer: 'Always use spacer', choices: ['Always use spacer', 'Never use spacer', 'Allowed but not required', 'Only use spacer with CHRP'] },
+      { question: 'For a UH-60 with a 25K sling set, what is the spacer rule?', answer: 'Never use spacer', choices: ['Never use spacer', 'Always use spacer', 'Allowed but not required', 'Only use spacer at night'] },
+      { question: 'For a CH-47 with 10K or 25K sling sets, what is the spacer rule?', answer: 'Allowed but not required', choices: ['Allowed but not required', 'Always required', 'Never allowed', 'Required only with 25K'] },
+      { question: 'Which CHRP is allowed for UH-60?', answer: '11K CHRP', choices: ['11K CHRP', '25K CHRP', 'Both 11K and 25K CHRP', 'No CHRP'] },
+      { question: 'What are the components of the Type IV connector link?', answer: 'Base plate, 2 aluminum rollers, 1 locking plate', choices: ['Base plate, 2 aluminum rollers, 1 locking plate', 'Two base plates and one steel roller', 'Apex, spacer, and locking nut', 'Clevis, chain, and grab hook'] },
+      { question: 'What is the capacity of the large clevis?', answer: '12,500 lbs', choices: ['12,500 lbs', '6,250 lbs', '8,650 lbs', '7,000 lbs'] },
+      { question: 'What is the capacity of the medium clevis?', answer: '6,250 lbs', choices: ['6,250 lbs', '4,420 lbs', '8,650 lbs', '12,500 lbs'] },
+      { question: 'What is the capacity of the 5/8 in screw pin clevis?', answer: '4,420 lbs', choices: ['4,420 lbs', '6,250 lbs', '8,650 lbs', '7,000 lbs'] },
+      { question: 'What is the capacity of Type III nylon?', answer: '550 lbs', choices: ['550 lbs', '80 lbs', '1,000 lbs', '4,500 lbs'] },
+      { question: 'What is the capacity of 1/4 in cotton webbing?', answer: '80 lbs', choices: ['80 lbs', '550 lbs', '1,000 lbs', '3,180 lbs'] },
+      { question: 'What is the capacity of 7/16 in nylon rope?', answer: '4,500 lbs', choices: ['4,500 lbs', '3,180 lbs', '550 lbs', '1,000 lbs'] },
+      { question: 'What are the A-22 cargo bag weights?', answer: '500 min, 2,200 max, 58 empty', choices: ['500 min, 2,200 max, 58 empty', '1,460 min, 4,200 max, 58 empty', '500 min, 5,000 max, 96 empty', '2,800 empty, 6,320 loaded'] },
+      { question: 'What is the A-22 link count?', answer: '10K: 3; 25K: 5', choices: ['10K: 3; 25K: 5', '10K: 20; 25K: 17', '10K: 75; 25K: 90', '10K: 5; 25K: 3'] },
+      { question: 'What is the 5K cargo net size and load-bearing zone?', answer: '15 ft x 15 ft; 5 ft x 5 ft', choices: ['15 ft x 15 ft; 5 ft x 5 ft', '18 ft x 18 ft; 6 ft x 6 ft', '15 ft x 15 ft; 6 ft x 6 ft', '18 ft x 18 ft; 5 ft x 5 ft'] },
+      { question: 'What is the 10K cargo net size and load-bearing zone?', answer: '18 ft x 18 ft; 6 ft x 6 ft', choices: ['18 ft x 18 ft; 6 ft x 6 ft', '15 ft x 15 ft; 5 ft x 5 ft', '18 ft x 18 ft; 5 ft x 5 ft', '15 ft x 15 ft; 6 ft x 6 ft'] },
+      { question: 'What are acceptable cargo net hook sequences?', answer: '1,3,2,4 or 1,3,4,2', choices: ['1,3,2,4 or 1,3,4,2', '1,2,3,4 only', '1,4,2,3 or 2,4,1,3', '3,1,4,2 only'] },
+      { question: 'What is the single 500-gal fuel blivet max and empty weight?', answer: '4,200 max, 275 empty', choices: ['4,200 max, 275 empty', '16,800 max, 275 empty', '2,200 max, 58 empty', '6,320 loaded, 2,800 empty'] },
+      { question: 'What is the M1102 trailer weight range?', answer: '1,460 min, 4,200 max', choices: ['1,460 min, 4,200 max', '1,460 min, 3,400 max', '2,800 empty, 6,320 loaded', '10,300 empty, 12,100 max'] },
+      { question: 'What is the M1102 link count?', answer: '10K: 20 front / 3 rear; 25K: 17 front / 5 rear', choices: ['10K: 20 front / 3 rear; 25K: 17 front / 5 rear', '10K: 75 front / 90 rear', '10K: 30 front / 3 rear; 25K: 20 front / 3 rear', '10K: 3; 25K: 5'] },
+      { question: 'What is the M1151 empty weight, ACL, and max weight?', answer: '10,300 empty, 1,800 ACL, 12,100 max', choices: ['10,300 empty, 1,800 ACL, 12,100 max', '2,800 empty, 6,320 loaded', '1,460 min, 4,200 max', '500 min, 2,200 max'] },
+      { question: 'What is the M1151 link count?', answer: '30 front empty, 20 front full, 3 rear', choices: ['30 front empty, 20 front full, 3 rear', '20 front / 3 rear empty, 17 front / 5 rear full', '75 front / 90 rear', '3 with 10K, 5 with 25K'] },
+      { question: 'What is the M149A2 water trailer weight?', answer: '2,800 empty, 6,320 loaded', choices: ['2,800 empty, 6,320 loaded', '1,460 min, 4,200 max', '10,300 empty, 12,100 max', '500 min, 5,000 max'] },
+      { question: 'How is the M149A2 water trailer flown?', answer: 'Rearward', choices: ['Rearward', 'Forward', 'Sideways', 'Either forward or rearward'] },
+      { question: 'What is the M149A2 link count?', answer: '75 front / 90 rear', choices: ['75 front / 90 rear', '20 front / 3 rear', '17 front / 5 rear', '30 front / 3 rear'] },
+      { question: 'What can secure equipment in the bed of the M1102 trailer?', answer: '15 ft tie-down strap or CGU-1B', choices: ['15 ft tie-down strap or CGU-1B', 'Apex tether cord only', '1/4 in cotton webbing only', 'Medium clevis only'] },
+      { question: 'What renders an aerial delivery sling unserviceable?', answer: 'Three or more consecutive loose/broken stitches or five or more in a general area', choices: ['Three or more consecutive loose/broken stitches or five or more in a general area', 'One loose stitch anywhere', 'Any faded label', 'Two links of excess chain'] },
+      { question: 'What personnel are required for sling-load operations?', answer: 'Signal person, static wand person, hookup person', choices: ['Signal person, static wand person, hookup person', 'Pilot, medic, crew chief', 'Inspector, recorder, driver', 'PZ control, LZ control, RTO'] },
+      { question: 'What PPE is required for ground crew personnel?', answer: 'ACH with chinstrap, goggles, earplugs, gloves, sleeves rolled down and buttoned', choices: ['ACH with chinstrap, goggles, earplugs, gloves, sleeves rolled down and buttoned', 'Soft cap, eye pro, gloves only', 'ACH, reflective belt, PT belt, gloves', 'Helmet optional, gloves required'] },
+      { question: 'What are ways to improve in-flight stability?', answer: 'Increase load weight, redistribute weight, adjust link count, install drogue chute, reduce airspeed', choices: ['Increase load weight, redistribute weight, adjust link count, install drogue chute, reduce airspeed', 'Decrease load weight, remove chains, increase airspeed', 'Use only CHRP and no sling legs', 'Add permanent ties to all breakaways'] }
+    ];
     const deficiencyGroups = [
       {
         title: 'HMMWV M1097',
@@ -1318,6 +1381,7 @@
     ];
 
     let currentQuizQuestions = [];
+    let currentMultipleChoiceQuestions = [];
     let currentSlingloadBrief = null;
     let selectedSlingloadGuess = null;
 
@@ -1423,6 +1487,63 @@
 
       const score = document.getElementById('quizScore');
       score.textContent = 'Score: ' + correctCount + ' / ' + currentQuizQuestions.length;
+      score.classList.add('active');
+    }
+
+    function shuffleItems(items) {
+      return items
+        .map(function (item) { return { item: item, sort: Math.random() }; })
+        .sort(function (a, b) { return a.sort - b.sort; })
+        .map(function (entry) { return entry.item; });
+    }
+
+    function renderMultipleChoiceQuiz() {
+      const questionsWrap = document.getElementById('multipleChoiceQuestions');
+      const score = document.getElementById('multipleChoiceScore');
+      currentMultipleChoiceQuestions = shuffleItems(multipleChoicePool).slice(0, 5).map(function (question) {
+        return {
+          question: question.question,
+          answer: question.answer,
+          choices: shuffleItems(question.choices)
+        };
+      });
+      score.classList.remove('active');
+      score.textContent = '';
+      questionsWrap.innerHTML = currentMultipleChoiceQuestions.map(function (question, index) {
+        return [
+          '<div class="quiz-card" data-index="' + index + '">',
+          '<p class="mc-question">' + (index + 1) + '. ' + question.question + '</p>',
+          question.choices.map(function (choice, choiceIndex) {
+            const inputId = 'mcAnswer' + index + '_' + choiceIndex;
+            return [
+              '<label style="display:flex;gap:10px;align-items:flex-start;color:#1f2937;font-weight:700;margin:8px 0;">',
+              '<input id="' + inputId + '" type="radio" name="mcAnswer' + index + '" value="' + choice.replace(/"/g, '&quot;') + '" style="width:auto;margin-top:2px;" />',
+              '<span>' + choice + '</span>',
+              '</label>'
+            ].join('');
+          }).join(''),
+          '<div class="quiz-feedback" id="mcFeedback' + index + '"></div>',
+          '</div>'
+        ].join('');
+      }).join('');
+    }
+
+    function submitMultipleChoiceQuiz() {
+      let correctCount = 0;
+      currentMultipleChoiceQuestions.forEach(function (question, index) {
+        const selected = document.querySelector('input[name="mcAnswer' + index + '"]:checked');
+        const feedback = document.getElementById('mcFeedback' + index);
+        const selectedValue = selected ? selected.value : '';
+        const isCorrect = selectedValue === question.answer;
+        if (isCorrect) correctCount += 1;
+        feedback.className = 'quiz-feedback ' + (isCorrect ? 'correct' : 'wrong');
+        feedback.textContent = isCorrect
+          ? 'Correct: ' + question.answer
+          : 'Wrong. Correct answer: ' + question.answer;
+      });
+
+      const score = document.getElementById('multipleChoiceScore');
+      score.textContent = 'Score: ' + correctCount + ' / ' + currentMultipleChoiceQuestions.length;
       score.classList.add('active');
     }
 
@@ -1606,16 +1727,21 @@
     function switchQuizMode(mode) {
       const isSlingload = mode === 'slingload';
       const isDeficiencies = mode === 'deficiencies';
-      document.getElementById('numberQuizMode').classList.toggle('active', !isSlingload && !isDeficiencies);
+      const isMultipleChoice = mode === 'multipleChoice';
+      document.getElementById('numberQuizMode').classList.toggle('active', !isSlingload && !isDeficiencies && !isMultipleChoice);
+      document.getElementById('multipleChoiceMode').classList.toggle('active', isMultipleChoice);
       document.getElementById('slingloadTestMode').classList.toggle('active', isSlingload);
       document.getElementById('deficienciesMode').classList.toggle('active', isDeficiencies);
-      document.getElementById('numberQuizModeBtn').classList.toggle('active', !isSlingload && !isDeficiencies);
+      document.getElementById('numberQuizModeBtn').classList.toggle('active', !isSlingload && !isDeficiencies && !isMultipleChoice);
+      document.getElementById('multipleChoiceModeBtn').classList.toggle('active', isMultipleChoice);
       document.getElementById('slingloadModeBtn').classList.toggle('active', isSlingload);
       document.getElementById('deficienciesModeBtn').classList.toggle('active', isDeficiencies);
-      document.getElementById('numberQuizModeBtn').setAttribute('aria-selected', String(!isSlingload && !isDeficiencies));
+      document.getElementById('numberQuizModeBtn').setAttribute('aria-selected', String(!isSlingload && !isDeficiencies && !isMultipleChoice));
+      document.getElementById('multipleChoiceModeBtn').setAttribute('aria-selected', String(isMultipleChoice));
       document.getElementById('slingloadModeBtn').setAttribute('aria-selected', String(isSlingload));
       document.getElementById('deficienciesModeBtn').setAttribute('aria-selected', String(isDeficiencies));
       if (isSlingload && !currentSlingloadBrief) generateSlingloadBrief();
+      if (isMultipleChoice && !currentMultipleChoiceQuestions.length) renderMultipleChoiceQuiz();
     }
 
     function showQuiz() {
@@ -1684,6 +1810,9 @@
       document.getElementById('newQuizBtn').addEventListener('click', renderQuiz);
       document.getElementById('submitQuizBtn').addEventListener('click', submitQuiz);
       document.getElementById('numberQuizModeBtn').addEventListener('click', function () { switchQuizMode('number'); });
+      document.getElementById('multipleChoiceModeBtn').addEventListener('click', function () { switchQuizMode('multipleChoice'); });
+      document.getElementById('newMultipleChoiceBtn').addEventListener('click', renderMultipleChoiceQuiz);
+      document.getElementById('submitMultipleChoiceBtn').addEventListener('click', submitMultipleChoiceQuiz);
       document.getElementById('slingloadModeBtn').addEventListener('click', function () { switchQuizMode('slingload'); });
       document.getElementById('deficienciesModeBtn').addEventListener('click', function () { switchQuizMode('deficiencies'); });
       document.getElementById('newSlingloadBtn').addEventListener('click', generateSlingloadBrief);
@@ -1691,6 +1820,7 @@
       document.getElementById('slingIncorrectBtn').addEventListener('click', function () { chooseSlingloadGuess(false); });
       document.getElementById('submitSlingloadBtn').addEventListener('click', submitSlingloadGuess);
       renderQuiz();
+      renderMultipleChoiceQuiz();
       generateSlingloadBrief();
       renderDeficiencies();
     });
