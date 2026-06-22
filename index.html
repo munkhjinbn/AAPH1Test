@@ -26,9 +26,27 @@
     .quiz-actions { display: flex; flex-wrap: wrap; gap: 10px; margin: 0 0 18px; }
     .quiz-action { border: 0; border-radius: 999px; padding: 11px 16px; font-weight: 800; cursor: pointer; background: #0f766e; color: white; }
     .quiz-action.secondary { background: #e5e7eb; color: #111827; }
+    .quiz-mode-tabs { display: flex; flex-wrap: wrap; gap: 10px; margin: 0 0 18px; }
+    .quiz-mode-tab { border: 1px solid #0f766e; border-radius: 999px; padding: 10px 15px; font-weight: 900; cursor: pointer; background: white; color: #115e59; }
+    .quiz-mode-tab.active { background: #0f766e; color: white; }
+    .quiz-mode { display: none; }
+    .quiz-mode.active { display: block; }
     .quiz-card { background: white; border: 1px solid #d9e1e8; border-radius: 14px; box-shadow: 0 10px 24px rgba(15, 23, 42, .08); padding: 18px; margin-bottom: 14px; }
     .quiz-card label { display: block; font-weight: 800; color: #115e59; margin-bottom: 8px; }
     .quiz-card input { width: 100%; border: 1px solid #cbd5e1; border-radius: 10px; padding: 12px 13px; font-size: 1rem; }
+    .deficiency-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: 14px; }
+    .deficiency-card h2 { margin: 0 0 10px; color: #115e59; font-size: 1.15rem; }
+    .deficiency-card ul { margin: 0; padding-left: 20px; }
+    .deficiency-card li { margin: 5px 0; }
+    .brief-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(210px, 1fr)); gap: 12px; margin-top: 12px; }
+    .brief-item { border: 1px solid #d9e1e8; border-radius: 12px; background: #fbfdff; padding: 12px; }
+    .brief-item strong { display: block; color: #115e59; margin-bottom: 4px; }
+    .choice-row { display: flex; flex-wrap: wrap; gap: 10px; margin: 16px 0; }
+    .choice-btn { border: 1px solid #cbd5e1; border-radius: 12px; padding: 12px 18px; font-weight: 900; cursor: pointer; background: white; color: #111827; }
+    .choice-btn.active { border-color: #0f766e; background: #ccfbf1; color: #115e59; box-shadow: 0 0 0 3px rgba(13,148,136,.18); }
+    .slingload-feedback { display: none; margin-top: 14px; padding: 14px 16px; border-radius: 12px; border-left: 5px solid #0f766e; background: #e6fffa; line-height: 1.45; }
+    .slingload-feedback.active { display: block; }
+    .slingload-feedback.wrong { border-left-color: #f97316; background: #ffedd5; }
     .quiz-feedback { margin-top: 10px; padding: 10px 12px; border-radius: 10px; font-weight: 700; display: none; }
     .quiz-feedback.correct { display: block; color: #065f46; background: #d1fae5; }
     .quiz-feedback.wrong { display: block; color: #9a3412; background: #ffedd5; }
@@ -1103,16 +1121,41 @@
       <div class="quiz-header">
         <div class="quiz-header-inner">
           <h1 id="quizTitle">Phase 2 Quiz</h1>
-          <p>Five random fill-in questions from the numeric Phase 2 sling-load facts. Enter the number, then submit to check your answers.</p>
+          <p>Practice Phase 2 sling-load facts with number recall or a generated load-brief validation test.</p>
         </div>
       </div>
       <div class="quiz-wrap">
-        <div class="quiz-actions">
-          <button class="quiz-action" type="button" id="newQuizBtn">New Random Quiz</button>
-          <button class="quiz-action secondary" type="button" id="submitQuizBtn">Submit Answers</button>
+        <div class="quiz-mode-tabs" role="tablist" aria-label="Quiz modes">
+          <button class="quiz-mode-tab active" type="button" id="numberQuizModeBtn" aria-selected="true">Number Quiz</button>
+          <button class="quiz-mode-tab" type="button" id="slingloadModeBtn" aria-selected="false">Slingload Test</button>
+          <button class="quiz-mode-tab" type="button" id="deficienciesModeBtn" aria-selected="false">Possible Deficiencies</button>
         </div>
-        <div class="quiz-score" id="quizScore" role="status"></div>
-        <div id="quizQuestions"></div>
+        <div class="quiz-mode active" id="numberQuizMode">
+          <div class="quiz-actions">
+            <button class="quiz-action" type="button" id="newQuizBtn">New Random Quiz</button>
+            <button class="quiz-action secondary" type="button" id="submitQuizBtn">Submit Answers</button>
+          </div>
+          <div class="quiz-score" id="quizScore" role="status"></div>
+          <div id="quizQuestions"></div>
+        </div>
+        <div class="quiz-mode" id="slingloadTestMode">
+          <div class="quiz-actions">
+            <button class="quiz-action" type="button" id="newSlingloadBtn">New Load Brief</button>
+            <button class="quiz-action secondary" type="button" id="submitSlingloadBtn">Submit Guess</button>
+          </div>
+          <div class="quiz-card">
+            <h2 style="margin:0 0 8px;color:#115e59;font-size:1.35rem;">Slingload Load Brief</h2>
+            <div class="brief-grid" id="slingloadBrief"></div>
+            <div class="choice-row" aria-label="Choose whether the load brief is correct">
+              <button class="choice-btn" type="button" id="slingCorrectBtn">Correct</button>
+              <button class="choice-btn" type="button" id="slingIncorrectBtn">Incorrect</button>
+            </div>
+            <div class="slingload-feedback" id="slingloadFeedback" role="status"></div>
+          </div>
+        </div>
+        <div class="quiz-mode" id="deficienciesMode">
+          <div class="deficiency-grid" id="deficiencyList"></div>
+        </div>
       </div>
     </section>
   </div>
@@ -1190,11 +1233,93 @@
       { prompt: 'M149A2 water trailer empty weight', answer: '2,800 lbs', answers: ['2800'] },
       { prompt: 'M149A2 water trailer loaded weight', answer: '6,320 lbs', answers: ['6320'] },
       { prompt: 'M149A2 front/rear link count', answer: '75 front / 90 rear', answers: ['75/90', '75and90'] },
-      { prompt: 'M149A2 breakaways', answer: '1', answers: ['1'] },
       { prompt: 'M149A2 breakaways', answer: '1', answers: ['1'] }
     ];
 
+    const slingloadTypes = [
+      { name: 'A22 Cargo Bag', min: 500, max: 2200 },
+      { name: '5K Cargo Net', min: 500, max: 5000 },
+      { name: 'M1097 HMMWV', min: 5600, max: 10000 },
+      { name: 'M1102 Trailer', min: 1460, max: 4200 }
+    ];
+    const aircraftTypes = ['UH-60', 'CH-47'];
+    const slingLegTypes = ['10K sling leg', '25K sling leg'];
+    const chrpTypes = ['11K CHRP', '25K CHRP'];
+    const deficiencyGroups = [
+      {
+        title: 'HMMWV M1097',
+        items: [
+          'Hood latch not secure',
+          'Mirrors not secure',
+          'Battery box latch not secure',
+          'Transmission not in neutral',
+          'Troop seat not secure',
+          'Engine cover not secure',
+          'Parking brake not engaged',
+          'Tailgate latch not secured',
+          'Seatbelt not secured'
+        ]
+      },
+      {
+        title: 'A22 Cargo Bag',
+        items: [
+          'Connector snap not secured',
+          '188&quot; strap twisted',
+          '188&quot; strap misrouted',
+          'Lateral strap misrouted',
+          'Lacing cord misrouted',
+          'Lacing cord not secure',
+          'Medium clevis not secure',
+          '24&quot; suspension web sequence incorrect',
+          '24&quot; suspension web misrouted',
+          'Lateral strap twisted',
+          'Excess lateral strap not secured'
+        ]
+      },
+      {
+        title: 'Trailer M1102',
+        items: [
+          'Parking brake not engaged',
+          'Safety chains not secure',
+          'Sling leg misrouted',
+          'Light cable not secured',
+          'Tailgate latch not secured',
+          'Chains not padded',
+          'Chains misrouted',
+          'Light not shatter proof',
+          'CHRP inverted'
+        ]
+      },
+      {
+        title: '5K Cargo Net',
+        items: [
+          'Apex tether cord missing',
+          'Apex tether cord missing on the wrong side',
+          '7/16&quot; nylon rope misrouted',
+          'Hooks not secured',
+          'Hooks not alternating',
+          '7/16&quot; rope knot incorrect',
+          '7/16&quot; rope excess not secured',
+          'Chain misrouted'
+        ]
+      },
+      {
+        title: 'General Deficiencies',
+        items: [
+          'Link count incorrect',
+          'FOD',
+          'Permanent tie vs breakaway',
+          'Weight of load incorrect',
+          'POA to aircraft incorrect',
+          'Missing breakaway',
+          'Castellated nut inverted'
+        ]
+      }
+    ];
+
     let currentQuizQuestions = [];
+    let currentSlingloadBrief = null;
+    let selectedSlingloadGuess = null;
 
     function getHeaderOffset() {
       const switchBar = document.querySelector('.switch-bar');
@@ -1301,6 +1426,198 @@
       score.classList.add('active');
     }
 
+    function renderDeficiencies() {
+      const deficiencyList = document.getElementById('deficiencyList');
+      deficiencyList.innerHTML = deficiencyGroups.map(function (group) {
+        return [
+          '<section class="quiz-card deficiency-card">',
+          '<h2>' + group.title + '</h2>',
+          '<ul>',
+          group.items.map(function (item) { return '<li>' + item + '</li>'; }).join(''),
+          '</ul>',
+          '</section>'
+        ].join('');
+      }).join('');
+    }
+
+    function randomChoice(items) {
+      return items[Math.floor(Math.random() * items.length)];
+    }
+
+    function randomInt(min, max) {
+      return Math.floor(Math.random() * (max - min + 1)) + min;
+    }
+
+    function formatWeight(weight) {
+      return weight.toLocaleString('en-US') + ' lbs';
+    }
+
+    function validateSlingloadBrief(brief) {
+      const weightValid = brief.weight >= brief.load.min && brief.weight <= brief.load.max;
+      let spacerValid = true;
+      let chrpValid = true;
+      let aircraftRuleValid = true;
+      let spacerExplanation = '';
+      let chrpExplanation = '';
+      let aircraftExplanation = '';
+
+      if (brief.aircraft === 'UH-60') {
+        if (brief.chrp) {
+          spacerExplanation = 'Spacer requirement not applicable: this brief uses CHRP, so spacer information is removed and does not affect the answer.';
+          chrpValid = brief.chrp === '11K CHRP';
+          chrpExplanation = chrpValid
+            ? 'CHRP selection valid: UH-60 may use 11K CHRP.'
+            : 'CHRP selection invalid: UH-60 may use 11K CHRP, but 25K CHRP is not allowed.';
+        } else {
+          chrpExplanation = 'CHRP selection not used: CHRP rules do not apply because this brief uses spacer/no-spacer information instead.';
+          if (brief.slingLeg === '10K sling leg') {
+            spacerValid = brief.hasSpacer;
+            spacerExplanation = brief.hasSpacer
+              ? 'Spacer requirement followed: UH-60 with a 10K sling leg requires a spacer, and this brief uses one.'
+              : 'Spacer requirement not followed: UH-60 with a 10K sling leg requires a spacer, but this brief does not use one.';
+          } else {
+            spacerValid = !brief.hasSpacer;
+            spacerExplanation = brief.hasSpacer
+              ? 'Spacer requirement not followed: UH-60 with a 25K sling leg must not use a spacer, but this brief uses one.'
+              : 'Spacer requirement followed: UH-60 with a 25K sling leg must not use a spacer, and this brief does not use one.';
+          }
+        }
+
+        aircraftRuleValid = spacerValid && chrpValid;
+        aircraftExplanation = aircraftRuleValid
+          ? 'Aircraft-specific UH-60 rules were followed.'
+          : 'Aircraft-specific UH-60 rules were not followed.';
+      } else {
+        spacerExplanation = brief.chrp
+          ? 'Spacer requirement not applicable: this brief uses CHRP, so spacer information is removed and does not affect the answer.'
+          : 'Spacer requirement: CH-47 spacer requirements do not matter, so this spacer choice is acceptable.';
+        chrpExplanation = brief.chrp
+          ? 'CHRP selection valid: CH-47 may use either 11K CHRP or 25K CHRP unless another rule is violated.'
+          : 'CHRP selection not used: CHRP rules do not apply because this brief uses spacer/no-spacer information instead.';
+        aircraftExplanation = 'Aircraft-specific CH-47 rules were followed; sling leg and CHRP combinations are valid unless another rule is violated.';
+      }
+
+      const weightExplanation = weightValid
+        ? 'Load weight is within range: ' + brief.load.name + ' allows ' + formatWeight(brief.load.min) + ' to ' + formatWeight(brief.load.max) + '.'
+        : 'Load weight is out of range: ' + brief.load.name + ' allows ' + formatWeight(brief.load.min) + ' to ' + formatWeight(brief.load.max) + '.';
+      const isValid = weightValid && aircraftRuleValid && spacerValid && chrpValid;
+
+      return {
+        isValid: isValid,
+        weightValid: weightValid,
+        aircraftRuleValid: aircraftRuleValid,
+        spacerValid: spacerValid,
+        chrpValid: chrpValid,
+        explanations: [weightExplanation, aircraftExplanation, spacerExplanation, chrpExplanation]
+      };
+    }
+
+    function createRandomSlingloadBrief() {
+      const load = randomChoice(slingloadTypes);
+      const usesChrp = Math.random() < 0.5;
+      return {
+        load: load,
+        weight: randomInt(Math.max(0, load.min - 1500), load.max + 1500),
+        aircraft: randomChoice(aircraftTypes),
+        slingLeg: randomChoice(slingLegTypes),
+        chrp: usesChrp ? randomChoice(chrpTypes) : null,
+        hasSpacer: usesChrp ? false : Math.random() < 0.5
+      };
+    }
+
+    function generateSlingloadBrief() {
+      const shouldBeValid = Math.random() < 0.5;
+      let brief = null;
+
+      for (let attempt = 0; attempt < 200; attempt += 1) {
+        const candidate = createRandomSlingloadBrief();
+        if (validateSlingloadBrief(candidate).isValid === shouldBeValid) {
+          brief = candidate;
+          break;
+        }
+      }
+
+      if (!brief) {
+        const load = randomChoice(slingloadTypes);
+        brief = {
+          load: load,
+          weight: randomInt(load.min, load.max),
+          aircraft: 'UH-60',
+          slingLeg: '10K sling leg',
+          chrp: null,
+          hasSpacer: shouldBeValid
+        };
+      }
+
+      currentSlingloadBrief = brief;
+      selectedSlingloadGuess = null;
+      renderSlingloadBrief();
+    }
+
+    function renderSlingloadBrief() {
+      const brief = currentSlingloadBrief;
+      const briefWrap = document.getElementById('slingloadBrief');
+      const feedback = document.getElementById('slingloadFeedback');
+      document.getElementById('slingCorrectBtn').classList.remove('active');
+      document.getElementById('slingIncorrectBtn').classList.remove('active');
+      feedback.className = 'slingload-feedback';
+      feedback.innerHTML = '';
+      const briefItems = [
+        ['Slingload Type', brief.load.name],
+        ['Load Weight', formatWeight(brief.weight)],
+        ['Aircraft Type', brief.aircraft],
+        ['Sling Leg Type', brief.slingLeg]
+      ];
+      if (brief.chrp) {
+        briefItems.push(['CHRP Type', brief.chrp]);
+      } else {
+        briefItems.push(['Spacer Information', brief.hasSpacer ? 'Spacer used' : 'No spacer used']);
+      }
+      briefWrap.innerHTML = briefItems.map(function (item) {
+        return '<div class="brief-item"><strong>' + item[0] + '</strong>' + item[1] + '</div>';
+      }).join('');
+    }
+
+    function chooseSlingloadGuess(guess) {
+      selectedSlingloadGuess = guess;
+      document.getElementById('slingCorrectBtn').classList.toggle('active', guess === true);
+      document.getElementById('slingIncorrectBtn').classList.toggle('active', guess === false);
+    }
+
+    function submitSlingloadGuess() {
+      const feedback = document.getElementById('slingloadFeedback');
+      if (selectedSlingloadGuess === null) {
+        feedback.className = 'slingload-feedback active wrong';
+        feedback.textContent = 'Choose Correct or Incorrect before submitting.';
+        return;
+      }
+
+      const result = validateSlingloadBrief(currentSlingloadBrief);
+      const userWasCorrect = selectedSlingloadGuess === result.isValid;
+      feedback.className = 'slingload-feedback active' + (userWasCorrect ? '' : ' wrong');
+      feedback.innerHTML = [
+        '<strong>' + (userWasCorrect ? 'Correct.' : 'Incorrect.') + '</strong> This load brief is <strong>' + (result.isValid ? 'correct' : 'incorrect') + '</strong>.',
+        '<ul>',
+        result.explanations.map(function (explanation) { return '<li>' + explanation + '</li>'; }).join(''),
+        '</ul>'
+      ].join('');
+    }
+
+    function switchQuizMode(mode) {
+      const isSlingload = mode === 'slingload';
+      const isDeficiencies = mode === 'deficiencies';
+      document.getElementById('numberQuizMode').classList.toggle('active', !isSlingload && !isDeficiencies);
+      document.getElementById('slingloadTestMode').classList.toggle('active', isSlingload);
+      document.getElementById('deficienciesMode').classList.toggle('active', isDeficiencies);
+      document.getElementById('numberQuizModeBtn').classList.toggle('active', !isSlingload && !isDeficiencies);
+      document.getElementById('slingloadModeBtn').classList.toggle('active', isSlingload);
+      document.getElementById('deficienciesModeBtn').classList.toggle('active', isDeficiencies);
+      document.getElementById('numberQuizModeBtn').setAttribute('aria-selected', String(!isSlingload && !isDeficiencies));
+      document.getElementById('slingloadModeBtn').setAttribute('aria-selected', String(isSlingload));
+      document.getElementById('deficienciesModeBtn').setAttribute('aria-selected', String(isDeficiencies));
+      if (isSlingload && !currentSlingloadBrief) generateSlingloadBrief();
+    }
+
     function showQuiz() {
       const phase1Frame = document.getElementById('phase1Frame');
       const phase2Frame = document.getElementById('phase2Frame');
@@ -1366,7 +1683,16 @@
       setTimeout(resizeVisibleFrame, 1000);
       document.getElementById('newQuizBtn').addEventListener('click', renderQuiz);
       document.getElementById('submitQuizBtn').addEventListener('click', submitQuiz);
+      document.getElementById('numberQuizModeBtn').addEventListener('click', function () { switchQuizMode('number'); });
+      document.getElementById('slingloadModeBtn').addEventListener('click', function () { switchQuizMode('slingload'); });
+      document.getElementById('deficienciesModeBtn').addEventListener('click', function () { switchQuizMode('deficiencies'); });
+      document.getElementById('newSlingloadBtn').addEventListener('click', generateSlingloadBrief);
+      document.getElementById('slingCorrectBtn').addEventListener('click', function () { chooseSlingloadGuess(true); });
+      document.getElementById('slingIncorrectBtn').addEventListener('click', function () { chooseSlingloadGuess(false); });
+      document.getElementById('submitSlingloadBtn').addEventListener('click', submitSlingloadGuess);
       renderQuiz();
+      generateSlingloadBrief();
+      renderDeficiencies();
     });
     window.addEventListener('resize', resizeVisibleFrame);
   </script>
